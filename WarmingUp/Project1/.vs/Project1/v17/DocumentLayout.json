@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{EEBA3EB9-AB99-450A-9944-A8A96BA50F1E}|Project1.vcxproj|C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\1. \uD589\uB82C\uB2E4\uB8E8\uAE30.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EEBA3EB9-AB99-450A-9944-A8A96BA50F1E}|Project1.vcxproj|solutionrelative:1. \uD589\uB82C\uB2E4\uB8E8\uAE30.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "1. \uD589\uB82C\uB2E4\uB8E8\uAE30.cpp",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\1. \uD589\uB82C\uB2E4\uB8E8\uAE30.cpp",
+              "RelativeDocumentMoniker": "1. \uD589\uB82C\uB2E4\uB8E8\uAE30.cpp",
+              "ToolTip": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\1. \uD589\uB82C\uB2E4\uB8E8\uAE30.cpp",
+              "RelativeToolTip": "1. \uD589\uB82C\uB2E4\uB8E8\uAE30.cpp",
+              "ViewState": "AgIAAFQAAAAAAAAAAAAAAF0AAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-09-04T01:02:20.544Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
