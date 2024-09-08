@@ -18,5 +18,11 @@
     <ClCompile Include="1. 행렬다루기.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="2. 파일에서 문자열 읽기.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="3. 저장 리스트 만들기.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

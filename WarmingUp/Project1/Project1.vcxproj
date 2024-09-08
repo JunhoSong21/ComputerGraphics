@@ -128,6 +128,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="1. 행렬다루기.cpp" />
+    <ClCompile Include="2. 파일에서 문자열 읽기.cpp" />
+    <ClCompile Include="3. 저장 리스트 만들기.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
