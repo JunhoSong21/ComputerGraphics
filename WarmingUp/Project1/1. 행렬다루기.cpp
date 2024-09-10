@@ -8,6 +8,7 @@ int SelectCommand();
 
 int Amatrix[16];
 int Bmatrix[16];
+int oen = 0;
 
 int main() {
 	LoadingMakingMatrixs();
@@ -81,7 +82,19 @@ int SelectCommand() {
 	int NewMatrix[16];
 
 	if (CommandOpt == 109) { // 행렬의 곱셈
-
+		for (auto i = 0; i < 4; ++i) {
+			NewMatrix[i] = (Amatrix[0] * Bmatrix[0 + i]) + (Amatrix[1] * Bmatrix[4 + i]) + (Amatrix[2] * Bmatrix[8 + i]) + (Amatrix[3] * Bmatrix[12 + i]);
+		}
+		for (auto i = 4; i < 8; ++i) {
+			NewMatrix[i] = (Amatrix[4] * Bmatrix[0 + i - 4]) + (Amatrix[5] * Bmatrix[4 + i - 4]) + (Amatrix[6] * Bmatrix[8 + i - 4]) + (Amatrix[7] * Bmatrix[12 + i - 4]);
+		}
+		for (auto i = 8; i < 12; ++i) {
+			NewMatrix[i] = (Amatrix[8] * Bmatrix[0 + i - 8]) + (Amatrix[9] * Bmatrix[4 + i - 8]) + (Amatrix[10] * Bmatrix[8 + i - 8]) + (Amatrix[11] * Bmatrix[12 + i - 8]);
+		}
+		for (auto i = 12; i < 16; ++i) {
+			NewMatrix[i] = (Amatrix[12] * Bmatrix[0 + i - 12]) + (Amatrix[13] * Bmatrix[4 + i - 12]) + (Amatrix[14] * Bmatrix[8 + i - 12]) + (Amatrix[15] * Bmatrix[12 + i - 12]);
+		}
+		std::cout << "행렬의 곱셈" << std::endl;
 	}
 	else if (CommandOpt == 97) { // 행렬의 덧셈
 		for (int j = 0; j < 16; ++j) {
@@ -198,6 +211,70 @@ int SelectCommand() {
 		std::cout << "행렬식의 값" << std::endl;
 		std::cout << "첫 번째 행렬 : " << AmatrixDet << "\n" << "두 번째 행렬 : " << BmatrixDet << std::endl;
 
+		return 0;
+	}
+	else if (CommandOpt == 101) { // 홀수, 짝수만 출력
+		if (oen == 2) {
+			std::cout << "전체 출력" << std::endl;
+			ShowMatrixs();
+			oen = 0;
+		}
+		else if (oen == 0) {
+			char oenAmatrix[16], oenBmatrix[16];
+			std::cout << "짝수만 출력" << std::endl;
+			for (auto i = 0; i < 16; ++i) {
+				if (Amatrix[i] == 2)
+					oenAmatrix[i] = 50;
+				else
+					oenAmatrix[i] = ' ';
+				if (Bmatrix[i] == 2)
+					oenBmatrix[i] = 50;
+				else
+					oenBmatrix[i] = ' ';
+			}
+
+			int i = 0;
+
+			while (i < 13) {
+				std::cout << "|" << oenAmatrix[i] << " " << oenAmatrix[i + 1] << " " << oenAmatrix[i + 2] << " " << oenAmatrix[i + 3]
+					<< "||" << oenBmatrix[i] << " " << oenBmatrix[i + 1] << " " << oenBmatrix[i + 2] << " " << oenBmatrix[i + 3] << "|" << std::endl;
+				i += 4;
+			}
+
+			std::cout << std::endl;
+
+			oen = 1;
+		}
+		else if (oen == 1) {
+			char oenAmatrix[16], oenBmatrix[16];
+			std::cout << " 홀수만 출력" << std::endl;
+			for (auto i = 0; i < 16; ++i) {
+				if (Amatrix[i] == 2)
+					oenAmatrix[i] = ' ';
+				else if (Amatrix[i] == 1)
+					oenAmatrix[i] = 49;
+				else
+					oenAmatrix[i] = 48;
+				if (Bmatrix[i] == 2)
+					oenBmatrix[i] = ' ';
+				else if (Bmatrix[i] == 1)
+					oenBmatrix[i] = 49;
+				else
+					oenBmatrix[i] = 48;
+			}
+
+			int i = 0;
+
+			while (i < 13) {
+				std::cout << "|" << oenAmatrix[i] << " " << oenAmatrix[i + 1] << " " << oenAmatrix[i + 2] << " " << oenAmatrix[i + 3]
+					<< "||" << oenBmatrix[i] << " " << oenBmatrix[i + 1] << " " << oenBmatrix[i + 2] << " " << oenBmatrix[i + 3] << "|" << std::endl;
+				i += 4;
+			}
+
+			std::cout << std::endl;
+
+			oen = 2;
+		}
 		return 0;
 	}
 	else if (CommandOpt == 115) {
