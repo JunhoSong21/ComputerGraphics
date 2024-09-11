@@ -22,6 +22,8 @@ int main() {
 void LoadingMakingMatrixs() { // 행렬 생성하는 함수
 	std::cout << "새로운 2개의 행렬 생성중..." << std::endl;
 	
+	srand((unsigned)time(NULL));
+
 	for (auto i = 0; i < 2; ++i) { // 두개의 행렬 랜덤으로 생성하는 코드
 		int MatrixNum[16];
 		int SelectTWO[2];
@@ -81,7 +83,7 @@ int SelectCommand() {
 
 	int NewMatrix[16];
 
-	if (CommandOpt == 109) { // 행렬의 곱셈
+	if (CommandOpt == 'm') { // 행렬의 곱셈
 		for (auto i = 0; i < 4; ++i) {
 			NewMatrix[i] = (Amatrix[0] * Bmatrix[0 + i]) + (Amatrix[1] * Bmatrix[4 + i]) + (Amatrix[2] * Bmatrix[8 + i]) + (Amatrix[3] * Bmatrix[12 + i]);
 		}
@@ -96,51 +98,59 @@ int SelectCommand() {
 		}
 		std::cout << "행렬의 곱셈" << std::endl;
 	}
-	else if (CommandOpt == 97) { // 행렬의 덧셈
+	else if (CommandOpt == 'a') { // 행렬의 덧셈
 		for (int j = 0; j < 16; ++j) {
 			NewMatrix[j] = Amatrix[j] + Bmatrix[j];
 		}
 		std::cout << "행렬의 덧셈" << std::endl;
 	}
-	else if (CommandOpt == 100) { // 행렬의 뺄셈
+	else if (CommandOpt == 'd') { // 행렬의 뺄셈
 		for (int j = 0; j < 16; ++j) {
 			NewMatrix[j] = Amatrix[j] - Bmatrix[j];
 		}
 		std::cout << "행렬의 뺄셈" << std::endl;
 	}
-	else if (CommandOpt == 114) { // 행렬식의 값
+	else if (CommandOpt == 'r') { // 행렬식의 값
 		int AmatrixDet =
-			(Amatrix[0] * ((Amatrix[5] * (Amatrix[10] * Amatrix[15] - Amatrix[11] * Amatrix[14]))
+			(Amatrix[0] * 
+				((Amatrix[5] * (Amatrix[10] * Amatrix[15] - Amatrix[11] * Amatrix[14]))
 				- (Amatrix[6] * (Amatrix[9] * Amatrix[15] - Amatrix[11] * Amatrix[13]))
 				+ (Amatrix[7] * (Amatrix[9] * Amatrix[14] - Amatrix[10] * Amatrix[13]))))
-			- (Amatrix[4] * (Amatrix[4] * (Amatrix[10] * Amatrix[15] - Amatrix[11] * Amatrix[13]))
+			- (Amatrix[1] * 
+				((Amatrix[4] * (Amatrix[10] * Amatrix[15] - Amatrix[11] * Amatrix[14]))
+				- (Amatrix[6] * (Amatrix[8] * Amatrix[15] - Amatrix[11] * Amatrix[12]))
+				+ (Amatrix[7] * (Amatrix[8] * Amatrix[14] - Amatrix[10] * Amatrix[12]))))
+			+ (Amatrix[2] * 
+				((Amatrix[4] * (Amatrix[9] * Amatrix[15] - Amatrix[11] * Amatrix[13]))
 				- (Amatrix[5] * (Amatrix[8] * Amatrix[15] - Amatrix[11] * Amatrix[12]))
-				+ (Amatrix[7] * (Amatrix[8] * Amatrix[13] - Amatrix[9] * Amatrix[12])))
-			+ (Amatrix[2] * (Amatrix[4] * (Amatrix[9] * Amatrix[15] - Amatrix[11] * Amatrix[13]))
-				- (Amatrix[5] * (Amatrix[8] * Amatrix[15] - Amatrix[11] * Amatrix[12]))
-				+ (Amatrix[7] * (Amatrix[8] * Amatrix[13] - Amatrix[9] * Amatrix[12])))
-			- (Amatrix[3] * (Amatrix[4] * (Amatrix[9] * Amatrix[14] - Amatrix[10] * Amatrix[13]))
+				+ (Amatrix[7] * (Amatrix[8] * Amatrix[13] - Amatrix[9] * Amatrix[12]))))
+			- (Amatrix[3] * 
+				((Amatrix[4] * (Amatrix[9] * Amatrix[14] - Amatrix[10] * Amatrix[13]))
 				- (Amatrix[5] * (Amatrix[8] * Amatrix[14] - Amatrix[10] * Amatrix[12]))
-				+ (Amatrix[6] * (Amatrix[8] * Amatrix[13] - Amatrix[9] * Amatrix[12])));
+				+ (Amatrix[6] * (Amatrix[8] * Amatrix[13] - Amatrix[9] * Amatrix[12]))));
 		int BmatrixDet =
-			(Bmatrix[0] * ((Bmatrix[5] * (Bmatrix[10] * Bmatrix[15] - Bmatrix[11] * Bmatrix[14]))
-				- (Bmatrix[6] * (Bmatrix[9] * Bmatrix[15] - Bmatrix[11] * Bmatrix[13]))
-				+ (Bmatrix[7] * (Bmatrix[9] * Bmatrix[14] - Bmatrix[10] * Bmatrix[13]))))
-			- (Bmatrix[4] * (Bmatrix[4] * (Bmatrix[10] * Bmatrix[15] - Bmatrix[11] * Bmatrix[13]))
-				- (Bmatrix[5] * (Bmatrix[8] * Bmatrix[15] - Bmatrix[11] * Bmatrix[12]))
-				+ (Bmatrix[7] * (Bmatrix[8] * Bmatrix[13] - Bmatrix[9] * Bmatrix[12])))
-			+ (Bmatrix[2] * (Bmatrix[4] * (Bmatrix[9] * Bmatrix[15] - Bmatrix[11] * Bmatrix[13]))
-				- (Bmatrix[5] * (Bmatrix[8] * Bmatrix[15] - Bmatrix[11] * Bmatrix[12]))
-				+ (Bmatrix[7] * (Bmatrix[8] * Bmatrix[13] - Bmatrix[9] * Bmatrix[12])))
-			- (Bmatrix[3] * (Bmatrix[4] * (Bmatrix[9] * Bmatrix[14] - Bmatrix[10] * Bmatrix[13]))
+			(Bmatrix[0] *
+				((Bmatrix[5] * (Bmatrix[10] * Bmatrix[15] - Bmatrix[11] * Bmatrix[14]))
+					- (Bmatrix[6] * (Bmatrix[9] * Bmatrix[15] - Bmatrix[11] * Bmatrix[13]))
+					+ (Bmatrix[7] * (Bmatrix[9] * Bmatrix[14] - Bmatrix[10] * Bmatrix[13]))))
+			- (Bmatrix[1] *
+				((Bmatrix[4] * (Bmatrix[10] * Bmatrix[15] - Bmatrix[11] * Bmatrix[14]))
+					- (Bmatrix[6] * (Bmatrix[8] * Bmatrix[15] - Bmatrix[11] * Bmatrix[12]))
+					+ (Bmatrix[7] * (Bmatrix[8] * Bmatrix[14] - Bmatrix[10] * Bmatrix[12]))))
+			+ (Bmatrix[2] *
+				((Bmatrix[4] * (Bmatrix[9] * Bmatrix[15] - Bmatrix[11] * Bmatrix[13]))
+					- (Bmatrix[5] * (Bmatrix[8] * Bmatrix[15] - Bmatrix[11] * Bmatrix[12]))
+					+ (Bmatrix[7] * (Bmatrix[8] * Bmatrix[13] - Bmatrix[9] * Bmatrix[12]))))
+			- (Bmatrix[3] *
+				((Bmatrix[4] * (Bmatrix[9] * Bmatrix[14] - Bmatrix[10] * Bmatrix[13]))
 				- (Bmatrix[5] * (Bmatrix[8] * Bmatrix[14] - Bmatrix[10] * Bmatrix[12]))
-				+ (Bmatrix[6] * (Bmatrix[8] * Bmatrix[13] - Bmatrix[9] * Bmatrix[12])));
+				+ (Bmatrix[6] * (Bmatrix[8] * Bmatrix[13] - Bmatrix[9] * Bmatrix[12]))));
 
 		std::cout << "행렬식의 값" << std::endl;
 		std::cout << "첫 번째 행렬 : " << AmatrixDet << "\n" << "두 번째 행렬 : " << BmatrixDet << std::endl;
 		return 0;
 	}
-	else if (CommandOpt == 116) { // 전치행렬과 그 행렬식의 값
+	else if (CommandOpt == 't') { // 전치행렬과 그 행렬식의 값
 		int AmatrixTrans[16], BmatrixTrans[16];
 		for (auto i = 0; i < 16; i += 5) {
 			AmatrixTrans[i] = Amatrix[i];
@@ -213,7 +223,7 @@ int SelectCommand() {
 
 		return 0;
 	}
-	else if (CommandOpt == 101) { // 홀수, 짝수만 출력
+	else if (CommandOpt == 'e') { // 홀수, 짝수만 출력
 		if (oen == 2) {
 			std::cout << "전체 출력" << std::endl;
 			ShowMatrixs();
@@ -277,12 +287,12 @@ int SelectCommand() {
 		}
 		return 0;
 	}
-	else if (CommandOpt == 115) {
+	else if (CommandOpt == 's') {
 		LoadingMakingMatrixs();
 		ShowMatrixs();
 		return 0;
 	}
-	else if (CommandOpt >= 49 && CommandOpt <= 57) { // 입력한 숫자를 행렬에 곱
+	else if (CommandOpt >= '1' && CommandOpt <= '9') { // 입력한 숫자를 행렬에 곱
 		std::cout << "행렬에 " << CommandOpt << "을(를) 곱" << std::endl;
 
 		int AmatrixNum[16], BmatrixNum[16];
