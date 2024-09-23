@@ -1,10 +1,26 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\",
+  "WorkspaceRootPath": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{EEBA3EB9-AB99-450A-9944-A8A96BA50F1E}|Project1.vcxproj|C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\5. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615 \uADF8\uB9AC\uAE30.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{EEBA3EB9-AB99-450A-9944-A8A96BA50F1E}|Project1.vcxproj|C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\7. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615\uACFC \uCDA9\uB3CC \uD655\uC778\uD558\uAE30.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EEBA3EB9-AB99-450A-9944-A8A96BA50F1E}|Project1.vcxproj|solutionrelative:7. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615\uACFC \uCDA9\uB3CC \uD655\uC778\uD558\uAE30.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EEBA3EB9-AB99-450A-9944-A8A96BA50F1E}|Project1.vcxproj|C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\3. \uC800\uC7A5 \uB9AC\uC2A4\uD2B8 \uB9CC\uB4E4\uAE30.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EEBA3EB9-AB99-450A-9944-A8A96BA50F1E}|Project1.vcxproj|solutionrelative:3. \uC800\uC7A5 \uB9AC\uC2A4\uD2B8 \uB9CC\uB4E4\uAE30.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EEBA3EB9-AB99-450A-9944-A8A96BA50F1E}|Project1.vcxproj|C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\4. \uCE74\uB4DC \uC9DD \uB9DE\uCD94\uAE30 \uAC8C\uC784 \uB9CC\uB4E4\uAE30.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EEBA3EB9-AB99-450A-9944-A8A96BA50F1E}|Project1.vcxproj|solutionrelative:4. \uCE74\uB4DC \uC9DD \uB9DE\uCD94\uAE30 \uAC8C\uC784 \uB9CC\uB4E4\uAE30.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EEBA3EB9-AB99-450A-9944-A8A96BA50F1E}|Project1.vcxproj|C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\5. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615 \uADF8\uB9AC\uAE30.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{EEBA3EB9-AB99-450A-9944-A8A96BA50F1E}|Project1.vcxproj|solutionrelative:5. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615 \uADF8\uB9AC\uAE30.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EEBA3EB9-AB99-450A-9944-A8A96BA50F1E}|Project1.vcxproj|C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\6. \uACBD\uB85C \uB9CC\uB4E4\uACE0 \uACBD\uB85C \uB530\uB77C \uB3C4\uD615 \uC774\uB3D9\uD558\uAE30.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{EEBA3EB9-AB99-450A-9944-A8A96BA50F1E}|Project1.vcxproj|solutionrelative:6. \uACBD\uB85C \uB9CC\uB4E4\uACE0 \uACBD\uB85C \uB530\uB77C \uB3C4\uD615 \uC774\uB3D9\uD558\uAE30.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,19 +30,71 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "5. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615 \uADF8\uB9AC\uAE30.cpp",
-              "DocumentMoniker": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\5. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615 \uADF8\uB9AC\uAE30.cpp",
-              "RelativeDocumentMoniker": "5. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615 \uADF8\uB9AC\uAE30.cpp",
-              "ToolTip": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\5. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615 \uADF8\uB9AC\uAE30.cpp*",
-              "RelativeToolTip": "5. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615 \uADF8\uB9AC\uAE30.cpp*",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAABIAAAAJAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "3. \uC800\uC7A5 \uB9AC\uC2A4\uD2B8 \uB9CC\uB4E4\uAE30.cpp",
+              "DocumentMoniker": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\3. \uC800\uC7A5 \uB9AC\uC2A4\uD2B8 \uB9CC\uB4E4\uAE30.cpp",
+              "RelativeDocumentMoniker": "3. \uC800\uC7A5 \uB9AC\uC2A4\uD2B8 \uB9CC\uB4E4\uAE30.cpp",
+              "ToolTip": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\3. \uC800\uC7A5 \uB9AC\uC2A4\uD2B8 \uB9CC\uB4E4\uAE30.cpp",
+              "RelativeToolTip": "3. \uC800\uC7A5 \uB9AC\uC2A4\uD2B8 \uB9CC\uB4E4\uAE30.cpp",
+              "ViewState": "AgIAALUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-09-17T02:04:03.772Z",
+              "WhenOpened": "2024-09-23T17:35:08.798Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "4. \uCE74\uB4DC \uC9DD \uB9DE\uCD94\uAE30 \uAC8C\uC784 \uB9CC\uB4E4\uAE30.cpp",
+              "DocumentMoniker": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\4. \uCE74\uB4DC \uC9DD \uB9DE\uCD94\uAE30 \uAC8C\uC784 \uB9CC\uB4E4\uAE30.cpp",
+              "RelativeDocumentMoniker": "4. \uCE74\uB4DC \uC9DD \uB9DE\uCD94\uAE30 \uAC8C\uC784 \uB9CC\uB4E4\uAE30.cpp",
+              "ToolTip": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\4. \uCE74\uB4DC \uC9DD \uB9DE\uCD94\uAE30 \uAC8C\uC784 \uB9CC\uB4E4\uAE30.cpp",
+              "RelativeToolTip": "4. \uCE74\uB4DC \uC9DD \uB9DE\uCD94\uAE30 \uAC8C\uC784 \uB9CC\uB4E4\uAE30.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-09-23T17:35:06.005Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "7. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615\uACFC \uCDA9\uB3CC \uD655\uC778\uD558\uAE30.cpp",
+              "DocumentMoniker": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\7. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615\uACFC \uCDA9\uB3CC \uD655\uC778\uD558\uAE30.cpp",
+              "RelativeDocumentMoniker": "7. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615\uACFC \uCDA9\uB3CC \uD655\uC778\uD558\uAE30.cpp",
+              "ToolTip": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\7. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615\uACFC \uCDA9\uB3CC \uD655\uC778\uD558\uAE30.cpp",
+              "RelativeToolTip": "7. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615\uACFC \uCDA9\uB3CC \uD655\uC778\uD558\uAE30.cpp",
+              "ViewState": "AgIAABgAAAAAAAAAAAAiwFcAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-09-23T17:31:48.68Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "5. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615 \uADF8\uB9AC\uAE30.cpp",
+              "DocumentMoniker": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\5. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615 \uADF8\uB9AC\uAE30.cpp",
+              "RelativeDocumentMoniker": "5. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615 \uADF8\uB9AC\uAE30.cpp",
+              "ToolTip": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\5. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615 \uADF8\uB9AC\uAE30.cpp",
+              "RelativeToolTip": "5. \uC6C0\uC9C1\uC774\uB294 \uB3C4\uD615 \uADF8\uB9AC\uAE30.cpp",
+              "ViewState": "AgIAADcAAAAAAAAAAAAiwO8BAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-09-23T17:19:12.906Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "6. \uACBD\uB85C \uB9CC\uB4E4\uACE0 \uACBD\uB85C \uB530\uB77C \uB3C4\uD615 \uC774\uB3D9\uD558\uAE30.cpp",
+              "DocumentMoniker": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\6. \uACBD\uB85C \uB9CC\uB4E4\uACE0 \uACBD\uB85C \uB530\uB77C \uB3C4\uD615 \uC774\uB3D9\uD558\uAE30.cpp",
+              "RelativeDocumentMoniker": "6. \uACBD\uB85C \uB9CC\uB4E4\uACE0 \uACBD\uB85C \uB530\uB77C \uB3C4\uD615 \uC774\uB3D9\uD558\uAE30.cpp",
+              "ToolTip": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\WarmingUp\\Project1\\6. \uACBD\uB85C \uB9CC\uB4E4\uACE0 \uACBD\uB85C \uB530\uB77C \uB3C4\uD615 \uC774\uB3D9\uD558\uAE30.cpp",
+              "RelativeToolTip": "6. \uACBD\uB85C \uB9CC\uB4E4\uACE0 \uACBD\uB85C \uB530\uB77C \uB3C4\uD615 \uC774\uB3D9\uD558\uAE30.cpp",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAALwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-09-23T16:33:28.334Z",
               "EditorCaption": ""
             }
           ]
