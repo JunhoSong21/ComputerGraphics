@@ -4,7 +4,7 @@
 #include <ctime>
 #include <cctype>
 #include <cstdlib>
-#include <windows.h>
+#include <Windows.h>
 #include <string>
 
 const int GRID_SIZE = 5;
@@ -34,7 +34,7 @@ const int colors[12] = {
 
 void initializeGrid(Cell grid[TOTAL_CELLS]);
 void printGrid(const Cell grid[TOTAL_CELLS]);
-void printSolutionGrid(const Cell grid[TOTAL_CELLS]); // 정답판 출력 함수
+void printSolutionGrid(const Cell grid[TOTAL_CELLS]);
 bool getUserSelection(const Cell grid[TOTAL_CELLS], const std::string& input, int& idx1, int& idx2);
 void revealCells(Cell grid[TOTAL_CELLS], int idx1, int idx2);
 bool checkMatch(Cell grid[TOTAL_CELLS], int idx1, int idx2);
@@ -51,7 +51,7 @@ int main() {
 
     while (true) {
         system("cls");
-        std::cout << "남은 턴: " << turns << " | 점수: " << score << "\n";
+        std::cout << "남은 턴 : " << turns << "  점수 : " << score << "\n";
         printGrid(grid);
 
         std::string command;
@@ -69,7 +69,7 @@ int main() {
             continue;
         }
         if (turns <= 0) {
-            std::cout << "더 이상 턴이 없습니다. 게임을 리셋하거나 종료하세요.\n";
+            std::cout << "남은 턴이 없습니다. 게임 패배.\n";
             continue;
         }
 
@@ -82,9 +82,11 @@ int main() {
             if (checkMatch(grid, idx1, idx2)) {
                 std::cout << "매치 성공!\n";
                 score += 10;
+                Sleep(1000);
             }
             else {
                 std::cout << "매치되지 않았습니다.\n";
+                score -= 1;
                 Sleep(3000);
                 grid[idx1].revealed = false;
                 grid[idx2].revealed = false;
@@ -96,6 +98,7 @@ int main() {
         }
 
         bool allMatched = true;
+
         for (int i = 0; i < TOTAL_CELLS; ++i) {
             if (!grid[i].matched && grid[i].symbol != '*') {
                 allMatched = false;
@@ -105,15 +108,15 @@ int main() {
         if (allMatched) {
             system("cls");
             printGrid(grid);
-            std::cout << "\n모든 매치를 완료했습니다! 게임 종료.\n";
-            std::cout << "최종 점수: " << score << "\n";
+            std::cout << "\n모든 카드를 뒤집었습니다! 게임 종료.\n";
+            std::cout << "최종 점수 : " << score << "\n";
             break;
         }
         if (turns <= 0) {
             system("cls");
             printGrid(grid);
             std::cout << "\n더 이상 턴이 없습니다. 게임 종료.\n";
-            std::cout << "최종 점수: " << score << "\n";
+            std::cout << "최종 점수 : " << score << "\n";
             break;
         }
     }
@@ -160,7 +163,7 @@ void printGrid(const Cell grid[TOTAL_CELLS]) {
                 if (grid[idx].matched) {
                     if (grid[idx].symbol != '@') {
                         int letterIndex = grid[idx].symbol - 'A';
-                        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), colors[letterIndex]); // 각 문자 색상
+                        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), colors[letterIndex]);
                     }
                     else {
                         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
@@ -178,8 +181,7 @@ void printGrid(const Cell grid[TOTAL_CELLS]) {
 }
 
 void printSolutionGrid(const Cell grid[TOTAL_CELLS]) {
-    std::cout << "정답판:\n";
-    std::cout << " ";
+    std::cout << "정답판 :\n ";
     for (char c = 'a'; c < 'a' + GRID_SIZE; ++c) {
         std::cout << " " << c;
     }
@@ -189,7 +191,7 @@ void printSolutionGrid(const Cell grid[TOTAL_CELLS]) {
         std::cout << row + 1 << " ";
         for (int col = 0; col < GRID_SIZE; ++col) {
             int idx = row * GRID_SIZE + col;
-            std::cout << grid[idx].symbol << " "; // 항상 문자를 보여줌
+            std::cout << grid[idx].symbol << " ";
         }
         std::cout << "\n";
     }
@@ -224,7 +226,7 @@ bool getUserSelection(const Cell grid[TOTAL_CELLS], const std::string& input, in
     idx2 = row2 * GRID_SIZE + (col2 - 'a');
 
     if (grid[idx1].matched || grid[idx2].matched || grid[idx1].revealed || grid[idx2].revealed) {
-        std::cout << "이미 매칭된 또는 공개된 격자입니다.\n";
+        std::cout << "이미 뒤집어진 카드입니다.\n";
         return false;
     }
 

@@ -2,13 +2,13 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
-#include <conio.h> // getch() 사용을 위한 헤더
+#include <conio.h>
 
 const int SIZE = 30;
-const char PATH = '0';      // 경로
-const char BACKGROUND = '1'; // 배경
-const char OBSTACLE = 'X';  // 장애물
-const char PLAYER = '@';     // 플레이어 표시
+const char PATH = '0';
+const char BACKGROUND = '1';
+const char OBSTACLE = 'X';
+const char PLAYER = '@';
 const int NUM_OBSTACLES = 30;
 
 struct Position {
@@ -19,7 +19,7 @@ class Grid {
 private:
     char board[SIZE][SIZE];
     Position player;
-    Position path[SIZE * SIZE]; // 경로 저장
+    Position path[SIZE * SIZE];
     int pathLength;
 
 public:

@@ -171,14 +171,26 @@ void RightMove(int& x1, int& x2, int& y1, int& y2) {
 		}
 	}
 
-	if (x1 < x2) {
+	if (x1 < x2 && y1 < y2) {
 		for (int i = x1; i <= x2; ++i) {
 			for (int j = y1; j <= y2; ++j) {
 				Board[j][i].IsRec = true;
 			}
 		}
 	}
-	else {
+	else if (x1 < x2 && y1 > y2) {
+		for (int i = x1; i <= x2; ++i) {
+			for (int j = 0; j <= y2; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+		for (int i = x1; i <= x2; ++i) {
+			for (int j = y1; j <= 30; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+	}
+	else if (x1 > x2 && y1 < y2) {
 		for (int i = 0; i <= x2; ++i) {
 			for (int j = y1; j <= y2; ++j) {
 				Board[j][i].IsRec = true;
@@ -187,6 +199,31 @@ void RightMove(int& x1, int& x2, int& y1, int& y2) {
 
 		for (int i = x1; i < 30; ++i) {
 			for (int j = y1; j <= y2; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+	}
+	else if (x1 > x2 && y1 > y2) {
+		for (int i = 0; i <= x2; ++i) {
+			for (int j = 0; j <= y2; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+
+		for (int i = x1; i < 30; ++i) {
+			for (int j = y1; j < 30; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+
+		for (int i = 0; i <= x2; ++i) {
+			for (int j = y1; j < 30; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+
+		for (int i = x1; i < 30; ++i) {
+			for (int j = 0; j <= y2; ++j) {
 				Board[j][i].IsRec = true;
 			}
 		}
@@ -213,14 +250,26 @@ void LeftMove(int& x1, int& x2, int& y1, int& y2) {
 		}
 	}
 
-	if (x1 < x2) {
+	if (x1 < x2 && y1 < y2) {
 		for (int i = x1; i <= x2; ++i) {
 			for (int j = y1; j <= y2; ++j) {
 				Board[j][i].IsRec = true;
 			}
 		}
 	}
-	else {
+	else if (x1 < x2 && y1 > y2) {
+		for (int i = x1; i <= x2; ++i) {
+			for (int j = 0; j <= y2; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+		for (int i = x1; i <= x2; ++i) {
+			for (int j = y1; j <= 30; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+	}
+	else if (x1 > x2 && y1 < y2) {
 		for (int i = 0; i <= x2; ++i) {
 			for (int j = y1; j <= y2; ++j) {
 				Board[j][i].IsRec = true;
@@ -229,6 +278,31 @@ void LeftMove(int& x1, int& x2, int& y1, int& y2) {
 
 		for (int i = x1; i < 30; ++i) {
 			for (int j = y1; j <= y2; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+	}
+	else if (x1 > x2 && y1 > y2) {
+		for (int i = 0; i <= x2; ++i) {
+			for (int j = 0; j <= y2; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+
+		for (int i = x1; i < 30; ++i) {
+			for (int j = y1; j < 30; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+
+		for (int i = 0; i <= x2; ++i) {
+			for (int j = y1; j < 30; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+
+		for (int i = x1; i < 30; ++i) {
+			for (int j = 0; j <= y2; ++j) {
 				Board[j][i].IsRec = true;
 			}
 		}
@@ -255,22 +329,59 @@ void DownMove(int& x1, int& x2, int& y1, int& y2) {
 		}
 	}
 
-	if (y1 < y2) {
+	if (x1 < x2 && y1 < y2) {
 		for (int i = x1; i <= x2; ++i) {
 			for (int j = y1; j <= y2; ++j) {
 				Board[j][i].IsRec = true;
 			}
 		}
 	}
-	else {
+	else if (x1 < x2 && y1 > y2) {
 		for (int i = x1; i <= x2; ++i) {
 			for (int j = 0; j <= y2; ++j) {
 				Board[j][i].IsRec = true;
 			}
 		}
-
 		for (int i = x1; i <= x2; ++i) {
+			for (int j = y1; j <= 30; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+	}
+	else if (x1 > x2 && y1 < y2) {
+		for (int i = 0; i <= x2; ++i) {
+			for (int j = y1; j <= y2; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+
+		for (int i = x1; i < 30; ++i) {
+			for (int j = y1; j <= y2; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+	}
+	else if (x1 > x2 && y1 > y2) {
+		for (int i = 0; i <= x2; ++i) {
+			for (int j = 0; j <= y2; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+
+		for (int i = x1; i < 30; ++i) {
 			for (int j = y1; j < 30; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+
+		for (int i = 0; i <= x2; ++i) {
+			for (int j = y1; j < 30; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+
+		for (int i = x1; i < 30; ++i) {
+			for (int j = 0; j <= y2; ++j) {
 				Board[j][i].IsRec = true;
 			}
 		}
@@ -297,22 +408,59 @@ void UpMove(int& x1, int& x2, int& y1, int& y2) {
 		}
 	}
 
-	if (y1 < y2) {
+	if (x1 < x2 && y1 < y2) {
 		for (int i = x1; i <= x2; ++i) {
 			for (int j = y1; j <= y2; ++j) {
 				Board[j][i].IsRec = true;
 			}
 		}
 	}
-	else {
+	else if (x1 < x2 && y1 > y2) {
 		for (int i = x1; i <= x2; ++i) {
 			for (int j = 0; j <= y2; ++j) {
 				Board[j][i].IsRec = true;
 			}
 		}
-
-		for (int i = x1; i < x2; ++i) {
+		for (int i = x1; i <= x2; ++i) {
 			for (int j = y1; j <= 30; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+	}
+	else if (x1 > x2 && y1 < y2) {
+		for (int i = 0; i <= x2; ++i) {
+			for (int j = y1; j <= y2; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+
+		for (int i = x1; i < 30; ++i) {
+			for (int j = y1; j <= y2; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+	}
+	else if (x1 > x2 && y1 > y2) {
+		for (int i = 0; i <= x2; ++i) {
+			for (int j = 0; j <= y2; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+
+		for (int i = x1; i < 30; ++i) {
+			for (int j = y1; j < 30; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+
+		for (int i = 0; i <= x2; ++i) {
+			for (int j = y1; j < 30; ++j) {
+				Board[j][i].IsRec = true;
+			}
+		}
+
+		for (int i = x1; i < 30; ++i) {
+			for (int j = 0; j <= y2; ++j) {
 				Board[j][i].IsRec = true;
 			}
 		}
