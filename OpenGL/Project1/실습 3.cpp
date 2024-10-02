@@ -17,9 +17,10 @@ bool isDragging = false;
 int selectedRectangle = -1;
 float dragOffsetX = 0, dragOffsetY = 0;
 
-float RandomRGB() {
-    std::random_device rd;
-    std::default_random_engine eng(rd());
+std::random_device rd;
+std::default_random_engine eng(rd());
+
+float RandomRGB() { 
     std::uniform_real_distribution<float> distr(0.0f, 1.0f);
     return distr(eng);
 }

@@ -23,9 +23,10 @@ bool animationsActive = false;
 float zigzagLimit = 0.01f;
 float sizeChange = 0.001f;
 
+std::random_device rd;
+std::default_random_engine eng(rd());
+
 float RandomRGB() {
-    std::random_device rd;
-    std::default_random_engine eng(rd());
     std::uniform_real_distribution<float> distr(0.0f, 1.0f);
     return distr(eng);
 }
@@ -44,7 +45,7 @@ void main(int argc, char** argv) {
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(800, 600);
 
-    glutCreateWindow("Example4");
+    glutCreateWindow("Example 4");
 
     glewExperimental = GL_TRUE;
 
@@ -130,6 +131,11 @@ GLvoid keyboard(unsigned char key, int x, int y) {
         }
         break;
     case 'r':
+        animationsActive = false;
+        moveDiagonal = false;
+        moveZigZag = false;
+        changeSize = false;
+        changeColor = false;
         rectangles.clear();
         break;
     case 'q':

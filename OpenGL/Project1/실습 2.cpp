@@ -21,11 +21,11 @@ float RecIn3xy[4] = { -0.75f, -0.25f, -0.25f, -0.75f };
 float RecIn4[3] = { 0.5f, 0.f, 1.0f };
 float RecIn4xy[4] = { 0.25f, -0.25f, 0.75f, -0.75f };
 
-float RandomRGB() {
-	std::random_device rd;
-	std::default_random_engine eng(rd());
-	std::uniform_real_distribution<float> distr(0.0f, 1.0f);
+std::random_device rd;
+std::default_random_engine eng(rd());
 
+float RandomRGB() {
+	std::uniform_real_distribution<float> distr(0.0f, 1.0f);
 	return distr(eng);
 }
 
@@ -36,7 +36,7 @@ void main(int argc, char** argv) {
 	glutInitWindowSize(800, 600);
 
 
-	glutCreateWindow("Example2");
+	glutCreateWindow("Example 2");
 
 	glewExperimental = GL_TRUE;
 

@@ -11,11 +11,11 @@ GLvoid Keyboard(unsigned char key, int x, int y);
 
 bool TimerActive = false;
 
-float RandomRGB() {
-	std::random_device rd;
-	std::default_random_engine eng(rd());
-	std::uniform_real_distribution<float> distr(0.0f, 1.0f);  // ±Õµî ºÐÆ÷
+std::random_device rd;
+std::default_random_engine eng(rd());
 
+float RandomRGB() {
+	std::uniform_real_distribution<float> distr(0.0f, 1.0f);
 	return distr(eng);
 }
 
