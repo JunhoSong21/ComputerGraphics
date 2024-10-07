@@ -13,7 +13,7 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="리소스 파일\7">
+    <Filter Include="리소스 파일\glsl">
       <UniqueIdentifier>{e0dfb10d-2958-4968-8a34-eedb7491eb76}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -36,13 +36,19 @@
     <ClCompile Include="실습 7.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="실습 6.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="실습 8.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="vertex7.glsl">
-      <Filter>리소스 파일\7</Filter>
+    <None Include="vertex.glsl">
+      <Filter>리소스 파일\glsl</Filter>
     </None>
-    <None Include="fragment7.glsl">
-      <Filter>리소스 파일\7</Filter>
+    <None Include="fragment.glsl">
+      <Filter>리소스 파일\glsl</Filter>
     </None>
   </ItemGroup>
 </Project>

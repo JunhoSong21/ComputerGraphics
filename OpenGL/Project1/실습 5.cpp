@@ -33,6 +33,7 @@ GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid Mouse(int button, int state, int x, int y);
 GLvoid Motion(int x, int y);
 void MakeRandomRec();
+bool IsCollision(const Rect& rect1, const Erase& eraser);
 
 void main(int argc, char** argv) {
     glutInit(&argc, argv);
@@ -92,6 +93,10 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
     if (key == 'q') {
         glutLeaveMainLoop();
     }
+    else if (key == 'r') {
+        Recs.clear();
+        MakeRandomRec();
+    }
 
     glutPostRedisplay();
 }
@@ -105,6 +110,20 @@ GLvoid Mouse(int button, int state, int x, int y) {
         }
         else if (state == GLUT_UP) {
             Eraser.IsDrag = false;
+            for (auto i = 0; i < 3; ++i)
+                Eraser.RGB[i] = 0;
+        }
+    }
+
+    for (auto it = Recs.begin(); it != Recs.end();) {
+        if (Eraser.IsDrag && IsCollision(*it, Eraser)) {
+            for (int i = 0; i < 3; ++i)
+                Eraser.RGB[i] = it->RGB[i];
+            it = Recs.erase(it);
+        }
+        else {
+            DrawRect(*it);
+            ++it;
         }
     }
 
@@ -115,6 +134,18 @@ GLvoid Motion(int x, int y) {
     if (Eraser.IsDrag == true) {
         Eraser.x = (float)x / 400.0f - 1.0f;
         Eraser.y = 1.0f - (float)y / 300.0f;
+    }
+
+    for (auto it = Recs.begin(); it != Recs.end();) {
+        if (Eraser.IsDrag && IsCollision(*it, Eraser)) {
+            for (int i = 0; i < 3; ++i)
+                Eraser.RGB[i] = it->RGB[i];
+            it = Recs.erase(it);
+        }
+        else {
+            DrawRect(*it);
+            ++it;
+        }
     }
 
     glutPostRedisplay();
@@ -140,4 +171,9 @@ void MakeRandomRec() {
     }
 
     glutPostRedisplay();
+}
+
+bool IsCollision(const Rect& rect1, const Erase& eraser) {
+    return !(rect1.x + 0.05f < eraser.x - 0.1f || rect1.x - 0.05f > eraser.x + 0.1f
+        || rect1.y - 0.065f > eraser.y + 0.13f || rect1.y + 0.065f < eraser.y - 0.13f);
 }
