@@ -31,6 +31,7 @@ GLvoid drawScene();
 GLvoid Reshape(int w, int h);
 GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid Mouse(int button, int state, int x, int y);
+GLvoid Motion(int x, int y);
 void MakeRandomRec();
 
 void main(int argc, char** argv) {
@@ -57,6 +58,7 @@ void main(int argc, char** argv) {
     glutDisplayFunc(drawScene);
     glutReshapeFunc(Reshape);
     glutMouseFunc(Mouse);
+    glutMotionFunc(Motion);
     glutKeyboardFunc(Keyboard);
 
     glutMainLoop();
@@ -64,7 +66,7 @@ void main(int argc, char** argv) {
 
 void DrawRect(const Rect& rect) {
     glColor3f(rect.RGB[0], rect.RGB[1], rect.RGB[2]);
-    glRectf(rect.x - 0.1f, rect.y + 0.13f, rect.x + 0.1f, rect.y - 0.13f);
+    glRectf(rect.x - 0.05f, rect.y + 0.065f, rect.x + 0.05f, rect.y - 0.065f);
 }
 
 GLvoid drawScene() {
@@ -76,7 +78,7 @@ GLvoid drawScene() {
 
     if (Eraser.IsDrag) {
         glColor3f(Eraser.RGB[0], Eraser.RGB[1], Eraser.RGB[2]);
-        glRectf(Eraser.x - 0.2f, Eraser.y + 0.26f, Eraser.x + 0.2f, Eraser.y - 0.26f);
+        glRectf(Eraser.x - 0.1f, Eraser.y + 0.13f, Eraser.x + 0.1f, Eraser.y - 0.13f);
     }
 
     glutSwapBuffers();
@@ -87,8 +89,8 @@ GLvoid Reshape(int w, int h) {
 }
 
 GLvoid Keyboard(unsigned char key, int x, int y) {
-    if (key == 'a') {
-
+    if (key == 'q') {
+        glutLeaveMainLoop();
     }
 
     glutPostRedisplay();
@@ -98,12 +100,21 @@ GLvoid Mouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON) {
         if (state == GLUT_DOWN) {
             Eraser.IsDrag = true;
-            Eraser.x = x;
-            Eraser.y = y;
+            Eraser.x = (float)x / 400.0f - 1.0f;
+            Eraser.y = 1.0f - (float)y / 300.0f;
         }
         else if (state == GLUT_UP) {
             Eraser.IsDrag = false;
         }
+    }
+
+    glutPostRedisplay();
+}
+
+GLvoid Motion(int x, int y) {
+    if (Eraser.IsDrag == true) {
+        Eraser.x = (float)x / 400.0f - 1.0f;
+        Eraser.y = 1.0f - (float)y / 300.0f;
     }
 
     glutPostRedisplay();

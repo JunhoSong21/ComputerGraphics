@@ -1,37 +1,25 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\",
+  "WorkspaceRootPath": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\vertex7.glsl||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|solutionrelative:vertex7.glsl||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 7.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|solutionrelative:\uC2E4\uC2B5 7.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\fragment7.glsl||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|solutionrelative:fragment7.glsl||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 5.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 5.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|solutionrelative:\uC2E4\uC2B5 5.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 3.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|solutionrelative:\uC2E4\uC2B5 3.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 2.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|solutionrelative:\uC2E4\uC2B5 2.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 4.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 4.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|solutionrelative:\uC2E4\uC2B5 4.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 1.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 3.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|solutionrelative:\uC2E4\uC2B5 3.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 2.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|solutionrelative:\uC2E4\uC2B5 2.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 1.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{60EC7D93-DA36-4F65-BEE5-CD62D9800454}|Project1.vcxproj|solutionrelative:\uC2E4\uC2B5 1.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
@@ -42,79 +30,41 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "fragment7.glsl",
-              "DocumentMoniker": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\fragment7.glsl",
-              "RelativeDocumentMoniker": "fragment7.glsl",
-              "ToolTip": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\fragment7.glsl",
-              "RelativeToolTip": "fragment7.glsl",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-10-07T10:21:50.651Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "vertex7.glsl",
-              "DocumentMoniker": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\vertex7.glsl",
-              "RelativeDocumentMoniker": "vertex7.glsl",
-              "ToolTip": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\vertex7.glsl",
-              "RelativeToolTip": "vertex7.glsl",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-10-07T10:19:12.155Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "\uC2E4\uC2B5 7.cpp",
-              "DocumentMoniker": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 7.cpp",
-              "RelativeDocumentMoniker": "\uC2E4\uC2B5 7.cpp",
-              "ToolTip": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 7.cpp",
-              "RelativeToolTip": "\uC2E4\uC2B5 7.cpp",
-              "ViewState": "AgIAAHYAAAAAAAAAAAAAAH0AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-10-07T10:14:08.017Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "\uC2E4\uC2B5 5.cpp",
-              "DocumentMoniker": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 5.cpp",
+              "DocumentMoniker": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 5.cpp",
               "RelativeDocumentMoniker": "\uC2E4\uC2B5 5.cpp",
-              "ToolTip": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 5.cpp",
+              "ToolTip": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 5.cpp",
               "RelativeToolTip": "\uC2E4\uC2B5 5.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAYAAAAAAAAAA==",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAIwFAAAABTAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-10-02T00:42:31.896Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 1,
               "Title": "\uC2E4\uC2B5 4.cpp",
-              "DocumentMoniker": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 4.cpp",
+              "DocumentMoniker": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 4.cpp",
               "RelativeDocumentMoniker": "\uC2E4\uC2B5 4.cpp",
-              "ToolTip": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 4.cpp",
+              "ToolTip": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 4.cpp",
               "RelativeToolTip": "\uC2E4\uC2B5 4.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACgAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAIEAAAAAAAAAAAAAAI0AAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-10-01T12:32:28.217Z"
+              "WhenOpened": "2024-10-01T12:32:28.217Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "\uC2E4\uC2B5 3.cpp",
-              "DocumentMoniker": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 3.cpp",
+              "DocumentMoniker": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 3.cpp",
               "RelativeDocumentMoniker": "\uC2E4\uC2B5 3.cpp",
-              "ToolTip": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 3.cpp",
+              "ToolTip": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 3.cpp",
               "RelativeToolTip": "\uC2E4\uC2B5 3.cpp",
               "ViewState": "AgIAAHUAAAAAAAAAAAAAAE0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
@@ -122,11 +72,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "\uC2E4\uC2B5 2.cpp",
-              "DocumentMoniker": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 2.cpp",
+              "DocumentMoniker": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 2.cpp",
               "RelativeDocumentMoniker": "\uC2E4\uC2B5 2.cpp",
-              "ToolTip": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 2.cpp",
+              "ToolTip": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 2.cpp",
               "RelativeToolTip": "\uC2E4\uC2B5 2.cpp",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
@@ -134,11 +84,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 4,
               "Title": "\uC2E4\uC2B5 1.cpp",
-              "DocumentMoniker": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 1.cpp",
+              "DocumentMoniker": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 1.cpp",
               "RelativeDocumentMoniker": "\uC2E4\uC2B5 1.cpp",
-              "ToolTip": "C:\\Users\\ASUS\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 1.cpp",
+              "ToolTip": "C:\\Users\\\uC1A1\uC900\uD638\\Documents\\GitHub\\ComputerGraphics\\OpenGL\\Project1\\\uC2E4\uC2B5 1.cpp",
               "RelativeToolTip": "\uC2E4\uC2B5 1.cpp",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
