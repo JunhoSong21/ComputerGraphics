@@ -14,6 +14,7 @@ struct Rect {
 
 struct Erase {
     float x, y;
+    float width;
     float RGB[3];
     bool IsDrag;
 };
@@ -79,7 +80,7 @@ GLvoid drawScene() {
 
     if (Eraser.IsDrag) {
         glColor3f(Eraser.RGB[0], Eraser.RGB[1], Eraser.RGB[2]);
-        glRectf(Eraser.x - 0.1f, Eraser.y + 0.13f, Eraser.x + 0.1f, Eraser.y - 0.13f);
+        glRectf(Eraser.x - Eraser.width, Eraser.y + (Eraser.width * 1.3f), Eraser.x + Eraser.width, Eraser.y - (Eraser.width * 1.3f));
     }
 
     glutSwapBuffers();
@@ -107,6 +108,7 @@ GLvoid Mouse(int button, int state, int x, int y) {
             Eraser.IsDrag = true;
             Eraser.x = (float)x / 400.0f - 1.0f;
             Eraser.y = 1.0f - (float)y / 300.0f;
+            Eraser.width = 0.1f;
         }
         else if (state == GLUT_UP) {
             Eraser.IsDrag = false;
@@ -138,6 +140,7 @@ GLvoid Motion(int x, int y) {
 
     for (auto it = Recs.begin(); it != Recs.end();) {
         if (Eraser.IsDrag && IsCollision(*it, Eraser)) {
+            Eraser.width += 0.02f;
             for (int i = 0; i < 3; ++i)
                 Eraser.RGB[i] = it->RGB[i];
             it = Recs.erase(it);
@@ -174,6 +177,6 @@ void MakeRandomRec() {
 }
 
 bool IsCollision(const Rect& rect1, const Erase& eraser) {
-    return !(rect1.x + 0.05f < eraser.x - 0.1f || rect1.x - 0.05f > eraser.x + 0.1f
-        || rect1.y - 0.065f > eraser.y + 0.13f || rect1.y + 0.065f < eraser.y - 0.13f);
+    return !(rect1.x + 0.05f < eraser.x - Eraser.width || rect1.x - 0.05f > eraser.x + Eraser.width
+        || rect1.y - 0.065f > eraser.y + (Eraser.width * 1.3f) || rect1.y + 0.065f < eraser.y - (Eraser.width * 1.3f));
 }

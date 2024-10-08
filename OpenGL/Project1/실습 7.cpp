@@ -210,7 +210,6 @@ void make_shaderProgram() {
 	glUseProgram(shaderProgramID);
 }
 
-
 void make_vertexShaders()
 {
 	vertexSource = filetobuf("vertex.glsl");

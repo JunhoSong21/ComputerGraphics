@@ -39,7 +39,6 @@ GLvoid Reshape(int w, int h);
 GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid Mouse(int button, int state, int x, int y);
 GLvoid Timer(int value);
-
 void MakeRandomRecs();
 void SubdivideRect(Rect& rect);
 
@@ -68,7 +67,7 @@ void main(int argc, char** argv) {
     glutReshapeFunc(Reshape);
     glutMouseFunc(Mouse);
     glutKeyboardFunc(Keyboard);
-    glutTimerFunc(16, Timer, 0);
+    glutTimerFunc(50, Timer, 0);
 
     glutMainLoop();
 }

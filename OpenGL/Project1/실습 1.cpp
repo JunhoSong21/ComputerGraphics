@@ -25,8 +25,7 @@ void main(int argc, char** argv) {
 	glutInitWindowPosition(0, 0);
 	glutInitWindowSize(800, 600);
 
-	
-	glutCreateWindow("Example1");
+	glutCreateWindow("Example 1");
 
 	glewExperimental = GL_TRUE;
 
@@ -42,6 +41,7 @@ void main(int argc, char** argv) {
 	glutDisplayFunc(drawScene);
 	glutReshapeFunc(Reshape);
 	glutKeyboardFunc(Keyboard);
+
 	glutMainLoop();
 }
 
@@ -54,7 +54,7 @@ void TimerFunction(int value) {
 	if (TimerActive) {
 		glClearColor(RandomRGB(), RandomRGB(), RandomRGB(), 1.0f);
 		glutPostRedisplay();
-		glutTimerFunc(2000, TimerFunction, 1);
+		glutTimerFunc(1000, TimerFunction, 1);
 	}
 }
 
@@ -83,7 +83,7 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		break;
 	case 't':
-		glutTimerFunc(2000, TimerFunction, 1);
+		glutTimerFunc(1000, TimerFunction, 1);
 		TimerActive = true;
 		break;
 	case 's':
