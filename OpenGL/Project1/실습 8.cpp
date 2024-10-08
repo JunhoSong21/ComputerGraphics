@@ -64,7 +64,7 @@ void main(int argc, char** argv) {
 }
 
 GLvoid drawScene() {
-    glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+    glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(shaderProgramID);
@@ -79,8 +79,13 @@ GLvoid Reshape(int w, int h) {
 }
 
 GLvoid Keyboard(unsigned char key, int x, int y) {
-    if (key == 'a') {
-
+    switch (key) {
+    case 'a':
+        break;
+    case 'b':
+        break;
+    default:
+        break;
     }
 
     glutPostRedisplay();
@@ -96,25 +101,30 @@ void makeLine() {
 
     std::vector<GLfloat> vertices = {
         -1.f, 0.f, 1.f,
-         1.f, 0.f, 1.f
+         1.f, 0.f, 1.f,
+         0.f, -1.f, 1.f,
+         0.f, 1.f, 1.f
     };
     std::vector<GLfloat> colors = {
+        0.f, 0.f, 0.f,
+        0.f, 0.f, 0.f,
         0.f, 0.f, 0.f,
         0.f, 0.f, 0.f
     };
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(1);
 
-    glLineWidth(2.0f);
+    glLineWidth(1.f);
     glDrawArrays(GL_LINES, 0, 2);
+    glDrawArrays(GL_LINES, 2, 4);
     glBindVertexArray(0);
 }
 
