@@ -3,9 +3,13 @@
 #include <vector>
 #include <stdlib.h>
 #include <stdio.h>
+#include <random>
 #include <gl/glew.h>
 #include <gl/freeglut.h>
 #include <gl/freeglut_ext.h>
+
+std::random_device rd;
+std::default_random_engine eng(rd());
 
 struct Triangle {
     std::vector<GLfloat> vertices;
@@ -25,9 +29,18 @@ GLchar* vertexSource, * fragmentSource;
 GLuint vertexShader, fragmentShader;
 GLuint shaderProgramID;
 
-std::vector<Triangle> triangles[4];
+GLfloat FirstTrishape[3][3] = {
+
+};
+
+std::vector<Triangle> triangles[4][3];
+std::vector<Triangle> OnlyTri[4];
 GLenum Drawmode = GL_FILL;
 int MaxTris = 3;
+bool FirstQrtLeft = true;
+bool SecondQrtLeft = true;
+bool ThirdQrtLeft = true;
+bool FourthQrtLeft = true;
 
 GLvoid drawScene();
 GLvoid Reshape(int w, int h);
@@ -35,12 +48,18 @@ GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid Mouse(int button, int state, int x, int y);
 
 void makeLine();
+void DrawTriangles();
 
 void InitBuffer();
 void make_shaderProgram();
 void make_vertexShaders();
 void make_fragmentShaders();
 char* filetobuf(const char* file);
+
+float RandomRGB() {
+    std::uniform_real_distribution<float> distr(0.0f, 1.0f);
+    return distr(eng);
+}
 
 void main(int argc, char** argv) {
     glutInit(&argc, argv);
@@ -70,6 +89,7 @@ GLvoid drawScene() {
     glUseProgram(shaderProgramID);
     
     makeLine();
+    DrawTriangles();
 
     glutSwapBuffers();
 }
@@ -92,7 +112,39 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 }
 
 GLvoid Mouse(int button, int state, int x, int y) {
-    
+    float mx = (float)x / 400.0f - 1.0f;
+    float my = 1.0f - (float)y / 300.0f;
+
+    if (button == GL_LEFT && state == GLUT_DOWN) {
+        if (x >= 400 && y < 300) { // 1사분면
+            FirstQrtLeft = true;
+
+        }
+        else if (x < 400 && y < 300) { // 2사분면
+            SecondQrtLeft = true;
+        }
+        else if (x < 400 && y >= 300) { // 3사분면
+            ThirdQrtLeft = true;
+        }
+        else if (x >= 400 && y >= 300) { // 4사분면
+            FourthQrtLeft = true;
+        }
+    }
+    else if (button == GL_RIGHT && state == GLUT_DOWN) {
+        if (x >= 400 && y < 300) { // 1사분면
+            FirstQrtLeft = false;
+        }
+        else if (x < 400 && y < 300) { // 2사분면
+            SecondQrtLeft = false;
+        }
+        else if (x < 400 && y >= 300) { // 3사분면
+            ThirdQrtLeft = false;
+        }
+        else if (x >= 400 && y >= 300) { // 4사분면
+            FourthQrtLeft = false;
+        }
+    }
+
     glutPostRedisplay();
 }
 
@@ -126,6 +178,14 @@ void makeLine() {
     glDrawArrays(GL_LINES, 0, 2);
     glDrawArrays(GL_LINES, 2, 4);
     glBindVertexArray(0);
+}
+
+void DrawTriangles() {
+    glBindVertexArray(vao);
+
+    if (FirstQrtLeft == true) {
+        
+    }
 }
 
 void InitBuffer() {
