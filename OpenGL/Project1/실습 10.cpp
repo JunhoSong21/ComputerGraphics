@@ -1,130 +1,279 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include <iostream>
-#include <vector>
-#include <stdlib.h>
-#include <stdio.h>
-#include <random>
-#include <cmath>
-#include <gl/glew.h>
-#include <gl/freeglut.h>
+#include "10.h"
 
-std::random_device rd;
-std::default_random_engine eng(rd());
+#define PI 3.141592
+#define R 0.001
+#define POINT_DRAW 300
+#define POINT_SPEED 6
 
-GLfloat spiralAngle = 0.0f;   // 현재 스파이럴 각도
-int spiralCount = 0;           // 현재 그린 스파이럴 수
-bool drawPoints = false;       // 점으로 그릴지 여부
-std::vector<std::pair<float, float>> spiralPoints; // 스파이럴 점 위치 저장
+char vertex[] = { "vertex.glsl" };
+char fragment[] = { "fragment.glsl" };
 
-void InitSpiralPoints(int count);
-void DrawSpiral(float centerX, float centerY);
-void Display();
-void Reshape(int w, int h);
-void Mouse(int button, int state, int x, int y);
+typedef struct {
+    GLfloat color[3];
+    GLfloat cx, cy, r; // 중심 좌표, 반지름
+    GLint degree, speed;
+    GLint count;
+    GLint spiral_count;
+    bool isLine; // 선인지 점인지 구분
+} SPIRAL;
+
+GLuint shaderProgramID;
+GLuint vao, vbo[2];
+
+GLint Count = 0;
+GLint number = 300;
+GLint spiral_count = 1;
+
+bool time_control = FALSE;
+
+SPIRAL s;
+std::vector<SPIRAL> spirals;
+
+GLvoid drawScene();
+GLvoid Reshape(int w, int h);
+
+void make_shaderProgram();
 void Keyboard(unsigned char key, int x, int y);
-void ChangeBackgroundColor();
+void Mouse(int button, int state, int x, int y);
+void TimerFunction(int value);
 
-int main(int argc, char** argv) {
+void random_color(GLfloat* color[3]);
+void circle_spiral(GLfloat cx, GLfloat cy, GLfloat r, GLint degree, GLint speed, GLint count, bool isLine);
+
+void draw_spiral(SPIRAL* spiral);
+void addSpiral(GLfloat x, GLfloat y, bool isLine);
+void changeBackgroundColor();
+
+int main(int argc, char** argv)
+{
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(800, 600);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow("Spiral Animation");
+    glutInitWindowSize(WIDTH, HEIGHT);
+    glutCreateWindow("Example 10");
 
     glewExperimental = GL_TRUE;
     glewInit();
+    make_shaderProgram();
 
-    glutDisplayFunc(Display);
+    glutDisplayFunc(drawScene);
     glutReshapeFunc(Reshape);
-    glutMouseFunc(Mouse);
     glutKeyboardFunc(Keyboard);
-    glutIdleFunc(Display); // IDLE 시 화면을 계속 업데이트
+    glutMouseFunc(Mouse);
 
     glutMainLoop();
-    return 0;
 }
 
-void Display() {
-    glClear(GL_COLOR_BUFFER_BIT);
+GLvoid drawScene()
+{
+    glClear(GL_COLOR_BUFFER_BIT); // 배경 색상 클리어
 
-    for (const auto& point : spiralPoints) {
-        DrawSpiral(point.first, point.second);
+    glUseProgram(shaderProgramID);
+
+    for (int i = 0; i < s.spiral_count; i++) {
+        circle_spiral(s.cx + (R * 100 * i), s.cy + (R * 210 * i), s.r, s.degree, s.speed, s.count, s.isLine);
+        for (auto& spiral : spirals) draw_spiral(&spiral);
     }
 
     glutSwapBuffers();
 }
 
-void Reshape(int w, int h) {
-    glViewport(0, 0, w, h);
+GLvoid Reshape(int w, int h) { glViewport(0, 0, w, h); }
+
+void make_shaderProgram()
+{
+    make_VertexShaders(vertex);
+    make_FragmentShaders(fragment);
+
+    shaderProgramID = glCreateProgram();
+    glAttachShader(shaderProgramID, vertexShader);
+    glAttachShader(shaderProgramID, fragmentShader);
+    glLinkProgram(shaderProgramID);
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    glUseProgram(shaderProgramID);
+}
+
+void Keyboard(unsigned char key, int x, int y)
+{
+    switch (key) {
+    case '1': case '2': case '3': case '4': case '5':
+        spiral_count = key - '0';  // 숫자 변환
+        break;
+    case 'p': // 점으로 그리기
+        s.isLine = false;
+        break;
+    case 'l': // 선으로 그리기
+        s.isLine = true;
+        break;
+    }
 }
 
 void Mouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        float normalizedX = (float)(x) / 400.0f - 1.0f; // 좌표 정규화 (-1.0f ~ 1.0f)
-        float normalizedY = 1.0f - (float)(y) / 300.0f; // 좌표 정규화 (1.0f ~ -1.0f)
+        if (!time_control) {
+            changeBackgroundColor();
 
-        // 스파이럴 포인트 초기화
-        spiralCount = 0;
-        InitSpiralPoints(1); // 클릭한 위치에 스파이럴을 그리기 위해 포인트 추가
-        ChangeBackgroundColor(); // 배경색 변경
-        glutPostRedisplay(); // 화면 업데이트
+            s.cx = conversion_x(x);
+            s.cy = conversion_y(y);
+
+            Count = 0;
+            s.r = 0;
+            s.speed = POINT_SPEED;
+            s.count = 0;
+            random_color_single(s.color);
+
+            time_control = TRUE;
+
+            s.spiral_count = spiral_count;
+            glutTimerFunc(10, TimerFunction, 1);
+        }
     }
 }
 
-void Keyboard(unsigned char key, int x, int y) {
-    switch (key) {
-    case 'p':
-        drawPoints = true; // 점으로 그리기
-        break;
-    case 'l':
-        drawPoints = false; // 선으로 그리기
-        break;
-    case '1': case '2': case '3': case '4': case '5':
-        spiralCount = key - '0'; // 입력된 숫자만큼의 스파이럴 수 설정
-        InitSpiralPoints(spiralCount);
-        ChangeBackgroundColor(); // 배경색 변경
-        glutPostRedisplay(); // 화면 업데이트
-        break;
-    default:
-        break;
+void TimerFunction(int value) {
+    glutPostRedisplay();
+    Count++;
+    s.count++;
+    if (Count == POINT_DRAW) time_control = FALSE;
+    if (time_control) glutTimerFunc(10, TimerFunction, 1);
+}
+
+void random_color(GLfloat* color[3]) {
+    for (int i = 0; i < 3; i++) {
+        color[i][0] = 1.0f;
+        color[i][1] = 1.0f;
+        color[i][2] = 1.0f;
     }
 }
 
-void ChangeBackgroundColor() {
-    glClearColor((float)rand() / RAND_MAX, (float)rand() / RAND_MAX, (float)rand() / RAND_MAX, 1.0f);
+void circle_spiral(GLfloat cx, GLfloat cy, GLfloat r, GLint degree, GLint speed, GLint count, bool isLine) {
+    GLfloat x, y;
+    GLfloat prevX = cx, prevY = cy; // 이전 점의 위치를 저장하기 위한 초기값
+
+    if (isLine) {
+        glBegin(GL_LINES); // 선으로 그리기
+    }
+    else {
+        glBegin(GL_POINTS); // 점으로 그리기
+    }
+
+    for (int i = 0; i < count; i++) {
+        if (i < POINT_DRAW / 2) {
+            x = cx + (r * cosf(degree * PI / 180));
+            y = cy + (r * sinf(degree * PI / 180));
+            r += R;
+            degree = (degree + speed) % 360;
+        }
+        else {
+            x = cx + (r * cosf(degree * PI / 180));
+            y = cy + (r * sinf(degree * PI / 180));
+            r -= R;
+            degree = (degree - speed) % 360;
+        }
+
+        if (i == POINT_DRAW / 2) {
+            cx -= r * 2;
+            degree -= 180;
+        }
+
+        glPointSize(10); // 점 크기 설정
+        glColor3f(1.0f, 1.0f, 1.0f); // 하얀색으로 설정
+        glVertex2f(x, y); // 점 그리기
+
+        // 이전 점과 연결된 선 그리기
+        if (isLine && i > 0) {
+            glVertex2f(prevX, prevY); // 이전 점의 위치로 선을 그리기
+            glVertex2f(x, y); // 현재 점의 위치로 선을 그리기
+        }
+
+        // 현재 점의 위치 저장
+        prevX = x;
+        prevY = y;
+    }
+
+    glEnd();
+
+    if (count == POINT_DRAW) addSpiral(cx + (R * 300), cy, isLine);
 }
 
-void InitSpiralPoints(int count) {
-    spiralPoints.clear(); // 기존 포인트 초기화
-    for (int i = 0; i < count; ++i) {
-        float centerX = (float)(rand() % 200 - 100) / 100.0f; // 랜덤 X좌표
-        float centerY = (float)(rand() % 200 - 100) / 100.0f; // 랜덤 Y좌표
-        spiralPoints.push_back({ centerX, centerY }); // 포인트 추가
-    }
+void addSpiral(GLfloat x, GLfloat y, bool isLine)
+{
+    SPIRAL new_s;
+    new_s.cx = x;
+    new_s.cy = y;
+    new_s.r = 0;
+    new_s.speed = POINT_SPEED;
+    new_s.count = POINT_DRAW;
+    new_s.isLine = isLine; // 선 또는 점으로 설정
+
+    spirals.push_back(new_s);
 }
 
-void DrawSpiral(float centerX, float centerY) {
-    glBegin(drawPoints ? GL_POINTS : GL_LINE_STRIP); // 점 또는 선으로 그리기
-    float radius = 0.0f;
+void draw_spiral(SPIRAL* spiral) {
+    GLfloat cx = spiral->cx;
+    GLfloat cy = spiral->cy;
+    GLfloat r = spiral->r;
+    GLint degree = 0;
+    GLint speed = POINT_SPEED;
+    GLfloat x, y;
+    GLfloat prevX = cx, prevY = cy; // 이전 점의 위치
 
-    // 스파이럴 그리기 (2~3 바퀴)
-    for (int i = 0; i < 720; ++i) { // 2 바퀴
-        spiralAngle = (i * 0.1f); // 각도 증가
-        radius += 0.0025f; // 반지름 증가 (부드러운 변화를 위해 작게 설정)
-        float x = centerX + radius * cos(spiralAngle);
-        float y = centerY + radius * sin(spiralAngle);
-        glVertex2f(x, y);
+    if (spiral->isLine) {
+        glBegin(GL_LINES); // 선으로 그리기
+    }
+    else {
+        glBegin(GL_POINTS); // 점으로 그리기
     }
 
-    // 안에서 밖으로 그리기
-    radius = 0.0f; // 반지름 초기화
-    for (int i = 720; i >= 0; --i) { // 2 바퀴
-        spiralAngle = (i * 0.1f); // 각도 증가
-        radius -= 0.0025f; // 반지름 감소 (부드러운 변화를 위해 작게 설정)
-        float x = centerX + radius * cos(spiralAngle);
-        float y = centerY + radius * sin(spiralAngle);
-        glVertex2f(x, y);
+    for (int i = 0; i < spiral->count; i++) {
+        if (i < POINT_DRAW / 2) {
+            x = cx + (r * cosf(degree * PI / 180));
+            y = cy + (r * sinf(degree * PI / 180));
+            r += R;
+            degree = (degree + speed) % 360;
+        }
+        else {
+            x = cx + (r * cosf(degree * PI / 180));
+            y = cy + (r * sinf(degree * PI / 180));
+            r -= R;
+            degree = (degree - speed) % 360;
+        }
+
+        if (i == POINT_DRAW / 2) {
+            cx -= r * 2;
+            degree -= 180;
+        }
+
+        glPointSize(10); // 점 크기 설정
+        glColor3f(1.0f, 1.0f, 1.0f); // 하얀색으로 설정
+        glVertex2f(x, y); // 점 그리기
+
+        // 이전 점과 연결된 선 그리기
+        if (spiral->isLine && i > 0) {
+            glVertex2f(prevX, prevY); // 이전 점의 위치로 선을 그리기
+            glVertex2f(x, y); // 현재 점의 위치로 선을 그리기
+        }
+
+        // 현재 점의 위치 저장
+        prevX = x;
+        prevY = y;
     }
 
-    glEnd(); // 그리기 끝
+    glEnd();
+}
+
+void changeBackgroundColor()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> dis(100, HEIGHT / 2 - 100);
+
+    GLfloat RGB[3];
+
+    random_color_single(RGB);
+
+    glClearColor(RGB[0], RGB[1], RGB[2], 1.0f);
 }

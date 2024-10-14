@@ -60,4 +60,9 @@
       <Filter>리소스 파일\glsl</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="10.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

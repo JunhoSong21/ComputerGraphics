@@ -8,7 +8,6 @@
 #include <gl/freeglut.h>
 #include <gl/freeglut_ext.h>
 
-// 랜덤 함수들
 std::random_device rd;
 std::default_random_engine eng(rd());
 
@@ -21,20 +20,18 @@ float RandomWidthHeight() {
     return distr(eng);
 }
 
-// OpenGL 관련 변수
 GLuint vao, vbo[2];
 GLchar* vertexSource, * fragmentSource;
 GLuint vertexShader, fragmentShader;
 GLuint shaderProgramID;
 
-GLenum Drawmode = GL_FILL; // 그리기 모드 (면 또는 선)
-int MaxTris = 3;  // 각 사분면에 그릴 수 있는 최대 삼각형 수
+GLenum Drawmode = GL_FILL;
+int MaxTris = 3;
 
 // 사분면 별로 저장할 삼각형의 좌표와 색상
 std::vector<std::vector<GLfloat>> triangles[4]; // 4개의 사분면을 위한 벡터 배열
 std::vector<std::vector<GLfloat>> colors[4];
 
-// 함수 선언
 GLvoid drawScene();
 GLvoid Reshape(int w, int h);
 GLvoid Keyboard(unsigned char key, int x, int y);
@@ -48,8 +45,7 @@ void make_vertexShaders();
 void make_fragmentShaders();
 char* filetobuf(const char* file);
 
-// 메인 함수
-void main(int argc, char** argv) {
+GLvoid main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(100, 100);
@@ -70,7 +66,6 @@ void main(int argc, char** argv) {
     glutMainLoop();
 }
 
-// 화면 그리기
 GLvoid drawScene() {
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -83,12 +78,10 @@ GLvoid drawScene() {
     glutSwapBuffers();
 }
 
-// 창 크기 변경 처리
 GLvoid Reshape(int w, int h) {
     glViewport(0, 0, w, h);
 }
 
-// 키보드 입력 처리
 GLvoid Keyboard(unsigned char key, int x, int y) {
     switch (key) {
     case 'a': // 면으로 그리기
@@ -104,10 +97,9 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
     glutPostRedisplay();
 }
 
-// 마우스 입력 처리
 GLvoid Mouse(int button, int state, int x, int y) {
-    float mx = (float)x / 400.0f - 1.0f; // x 좌표 변환
-    float my = 1.0f - (float)y / 300.0f; // y 좌표 변환
+    float mx = (float)x / 400.0f - 1.0f;
+    float my = 1.0f - (float)y / 300.0f;
 
     int quadrant = 0;
     if (x >= 400 && y < 300) { // 1사분면
@@ -173,23 +165,19 @@ GLvoid Mouse(int button, int state, int x, int y) {
 void DrawQuadrantLines() {
     glBindVertexArray(vao);
 
-    // 수직선과 수평선을 그리기 위한 좌표 설정
     std::vector<GLfloat> lines = {
-        // 수직선 (x = 0을 중심으로)
-        0.0f, 1.0f, 1.0f,   // 위쪽 점
-        0.0f, -1.0f, 1.0f,  // 아래쪽 점
+        0.0f, 1.0f, 1.0f,
+        0.0f, -1.0f, 1.0f,
 
-        // 수평선 (y = 0을 중심으로)
-        -1.0f, 0.0f, 1.0f,  // 왼쪽 점
-        1.0f, 0.0f, 1.0f    // 오른쪽 점
+        -1.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 1.0f
     };
 
     std::vector<GLfloat> lineColors = {
-        // 직선 색상 (검은색)
-        0.0f, 0.0f, 0.0f,  // 수직선 위쪽
-        0.0f, 0.0f, 0.0f,  // 수직선 아래쪽
-        0.0f, 0.0f, 0.0f,  // 수평선 왼쪽
-        0.0f, 0.0f, 0.0f   // 수평선 오른쪽
+        0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f
     };
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
@@ -202,14 +190,13 @@ void DrawQuadrantLines() {
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(1);
 
-    glLineWidth(2.0f); // 선의 굵기를 설정
-    glDrawArrays(GL_LINES, 0, 4); // 두 개의 직선 (수직선 + 수평선)
+    glLineWidth(1.0f);
+    glDrawArrays(GL_LINES, 0, 4);
     glBindVertexArray(0);
 }
 
-// 삼각형 그리기 함수
 void DrawTriangles() {
-    glPolygonMode(GL_FRONT_AND_BACK, Drawmode); // 그리기 모드 설정
+    glPolygonMode(GL_FRONT_AND_BACK, Drawmode);
 
     glBindVertexArray(vao);
 
@@ -225,14 +212,13 @@ void DrawTriangles() {
             glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
             glEnableVertexAttribArray(1);
 
-            glDrawArrays(GL_TRIANGLES, 0, 3); // 삼각형 그리기
+            glDrawArrays(GL_TRIANGLES, 0, 3);
         }
     }
 
     glBindVertexArray(0);
 }
 
-// 버퍼 초기화 함수
 void InitBuffer() {
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
@@ -240,7 +226,6 @@ void InitBuffer() {
     glBindVertexArray(0);
 }
 
-// 셰이더 프로그램 생성 함수들
 void make_shaderProgram() {
     make_vertexShaders();
     make_fragmentShaders();
@@ -283,7 +268,6 @@ void make_fragmentShaders() {
     }
 }
 
-// 파일 읽기 함수
 char* filetobuf(const char* file) {
     FILE* fptr;
     long length;
