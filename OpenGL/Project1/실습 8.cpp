@@ -8,59 +8,47 @@
 #include <gl/freeglut.h>
 #include <gl/freeglut_ext.h>
 
+// 랜덤 함수들
 std::random_device rd;
 std::default_random_engine eng(rd());
 
-struct Triangle {
-    std::vector<GLfloat> vertices;
-    std::vector<GLfloat> colors;
-    GLenum mode = GL_TRIANGLES;
-    bool IsDraw;
-};
+float RandomRGB() {
+    std::uniform_real_distribution<float> distr(0.1f, 1.0f);
+    return distr(eng);
+}
+float RandomWidthHeight() {
+    std::uniform_real_distribution<float> distr(0.1f, 0.2f);
+    return distr(eng);
+}
 
-struct Line {
-    std::vector<GLfloat> vertices;
-    std::vector<GLfloat> colors;
-    GLenum mode = GL_LINE;
-};
-
+// OpenGL 관련 변수
 GLuint vao, vbo[2];
 GLchar* vertexSource, * fragmentSource;
 GLuint vertexShader, fragmentShader;
 GLuint shaderProgramID;
 
-GLfloat FirstTrishape[3][3] = {
+GLenum Drawmode = GL_FILL; // 그리기 모드 (면 또는 선)
+int MaxTris = 3;  // 각 사분면에 그릴 수 있는 최대 삼각형 수
 
-};
+// 사분면 별로 저장할 삼각형의 좌표와 색상
+std::vector<std::vector<GLfloat>> triangles[4]; // 4개의 사분면을 위한 벡터 배열
+std::vector<std::vector<GLfloat>> colors[4];
 
-std::vector<Triangle> triangles[4][3];
-std::vector<Triangle> OnlyTri[4];
-GLenum Drawmode = GL_FILL;
-int MaxTris = 3;
-bool FirstQrtLeft = true;
-bool SecondQrtLeft = true;
-bool ThirdQrtLeft = true;
-bool FourthQrtLeft = true;
-
+// 함수 선언
 GLvoid drawScene();
 GLvoid Reshape(int w, int h);
 GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid Mouse(int button, int state, int x, int y);
 
-void makeLine();
+void DrawQuadrantLines();
 void DrawTriangles();
-
 void InitBuffer();
 void make_shaderProgram();
 void make_vertexShaders();
 void make_fragmentShaders();
 char* filetobuf(const char* file);
 
-float RandomRGB() {
-    std::uniform_real_distribution<float> distr(0.0f, 1.0f);
-    return distr(eng);
-}
-
+// 메인 함수
 void main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
@@ -82,27 +70,32 @@ void main(int argc, char** argv) {
     glutMainLoop();
 }
 
+// 화면 그리기
 GLvoid drawScene() {
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(shaderProgramID);
-    
-    makeLine();
-    DrawTriangles();
+
+    DrawQuadrantLines();
+    DrawTriangles(); // 삼각형 그리기
 
     glutSwapBuffers();
 }
 
+// 창 크기 변경 처리
 GLvoid Reshape(int w, int h) {
     glViewport(0, 0, w, h);
 }
 
+// 키보드 입력 처리
 GLvoid Keyboard(unsigned char key, int x, int y) {
     switch (key) {
-    case 'a':
+    case 'a': // 면으로 그리기
+        Drawmode = GL_FILL;
         break;
-    case 'b':
+    case 'b': // 선으로 그리기
+        Drawmode = GL_LINE;
         break;
     default:
         break;
@@ -111,91 +104,143 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
     glutPostRedisplay();
 }
 
+// 마우스 입력 처리
 GLvoid Mouse(int button, int state, int x, int y) {
-    float mx = (float)x / 400.0f - 1.0f;
-    float my = 1.0f - (float)y / 300.0f;
+    float mx = (float)x / 400.0f - 1.0f; // x 좌표 변환
+    float my = 1.0f - (float)y / 300.0f; // y 좌표 변환
 
-    if (button == GL_LEFT && state == GLUT_DOWN) {
-        if (x >= 400 && y < 300) { // 1사분면
-            FirstQrtLeft = true;
-
-        }
-        else if (x < 400 && y < 300) { // 2사분면
-            SecondQrtLeft = true;
-        }
-        else if (x < 400 && y >= 300) { // 3사분면
-            ThirdQrtLeft = true;
-        }
-        else if (x >= 400 && y >= 300) { // 4사분면
-            FourthQrtLeft = true;
-        }
+    int quadrant = 0;
+    if (x >= 400 && y < 300) { // 1사분면
+        quadrant = 0;
     }
-    else if (button == GL_RIGHT && state == GLUT_DOWN) {
-        if (x >= 400 && y < 300) { // 1사분면
-            FirstQrtLeft = false;
+    else if (x < 400 && y < 300) { // 2사분면
+        quadrant = 1;
+    }
+    else if (x < 400 && y >= 300) { // 3사분면
+        quadrant = 2;
+    }
+    else if (x >= 400 && y >= 300) { // 4사분면
+        quadrant = 3;
+    }
+
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) { // 왼쪽 클릭
+        if (!triangles[quadrant].empty()) { // 기존 삼각형 삭제
+            triangles[quadrant].clear();
+            colors[quadrant].clear();
         }
-        else if (x < 400 && y < 300) { // 2사분면
-            SecondQrtLeft = false;
-        }
-        else if (x < 400 && y >= 300) { // 3사분면
-            ThirdQrtLeft = false;
-        }
-        else if (x >= 400 && y >= 300) { // 4사분면
-            FourthQrtLeft = false;
+        float a = RandomWidthHeight();
+        std::vector<GLfloat> newTriangle = {
+            mx, my + a, 1.f,
+            mx - a, my - a, 1.f,
+            mx + a, my - a, 1.f
+        };
+        triangles[quadrant].push_back(newTriangle);
+
+        // 동일한 색상 할당 (랜덤으로 하나의 색상을 생성한 후, 세 꼭짓점에 동일하게 적용)
+        GLfloat r = RandomRGB(), g = RandomRGB(), b = RandomRGB();
+        std::vector<GLfloat> newColor = {
+            r, g, b,
+            r, g, b,
+            r, g, b
+        };
+        colors[quadrant].push_back(newColor);
+    }
+
+    if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) { // 오른쪽 클릭
+        if (triangles[quadrant].size() < MaxTris) { // 최대 3개의 삼각형
+            float a = RandomWidthHeight();
+            std::vector<GLfloat> newTriangle = {
+                mx, my + a, 1.f,
+                mx - a, my - a, 1.f,
+                mx + a, my - a, 1.f
+            };
+            triangles[quadrant].push_back(newTriangle);
+
+            // 동일한 색상 할당 (랜덤으로 하나의 색상을 생성한 후, 세 꼭짓점에 동일하게 적용)
+            GLfloat r = RandomRGB(), g = RandomRGB(), b = RandomRGB();
+            std::vector<GLfloat> newColor = {
+                r, g, b,
+                r, g, b,
+                r, g, b
+            };
+            colors[quadrant].push_back(newColor);
         }
     }
 
     glutPostRedisplay();
 }
 
-void makeLine() {
+void DrawQuadrantLines() {
     glBindVertexArray(vao);
 
-    std::vector<GLfloat> vertices = {
-        -1.f, 0.f, 1.f,
-         1.f, 0.f, 1.f,
-         0.f, -1.f, 1.f,
-         0.f, 1.f, 1.f
+    // 수직선과 수평선을 그리기 위한 좌표 설정
+    std::vector<GLfloat> lines = {
+        // 수직선 (x = 0을 중심으로)
+        0.0f, 1.0f, 1.0f,   // 위쪽 점
+        0.0f, -1.0f, 1.0f,  // 아래쪽 점
+
+        // 수평선 (y = 0을 중심으로)
+        -1.0f, 0.0f, 1.0f,  // 왼쪽 점
+        1.0f, 0.0f, 1.0f    // 오른쪽 점
     };
-    std::vector<GLfloat> colors = {
-        0.f, 0.f, 0.f,
-        0.f, 0.f, 0.f,
-        0.f, 0.f, 0.f,
-        0.f, 0.f, 0.f
+
+    std::vector<GLfloat> lineColors = {
+        // 직선 색상 (검은색)
+        0.0f, 0.0f, 0.0f,  // 수직선 위쪽
+        0.0f, 0.0f, 0.0f,  // 수직선 아래쪽
+        0.0f, 0.0f, 0.0f,  // 수평선 왼쪽
+        0.0f, 0.0f, 0.0f   // 수평선 오른쪽
     };
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, lines.size() * sizeof(GLfloat), lines.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, lineColors.size() * sizeof(GLfloat), lineColors.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(1);
 
-    glLineWidth(1.f);
-    glDrawArrays(GL_LINES, 0, 2);
-    glDrawArrays(GL_LINES, 2, 4);
+    glLineWidth(2.0f); // 선의 굵기를 설정
+    glDrawArrays(GL_LINES, 0, 4); // 두 개의 직선 (수직선 + 수평선)
     glBindVertexArray(0);
 }
 
+// 삼각형 그리기 함수
 void DrawTriangles() {
+    glPolygonMode(GL_FRONT_AND_BACK, Drawmode); // 그리기 모드 설정
+
     glBindVertexArray(vao);
 
-    if (FirstQrtLeft == true) {
-        
+    for (int q = 0; q < 4; ++q) { // 각 사분면을 순회
+        for (size_t i = 0; i < triangles[q].size(); ++i) {
+            glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+            glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(GLfloat), triangles[q][i].data(), GL_STATIC_DRAW);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(0);
+
+            glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+            glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(GLfloat), colors[q][i].data(), GL_STATIC_DRAW);
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(1);
+
+            glDrawArrays(GL_TRIANGLES, 0, 3); // 삼각형 그리기
+        }
     }
+
+    glBindVertexArray(0);
 }
 
+// 버퍼 초기화 함수
 void InitBuffer() {
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
-    glGenBuffers(1, &vbo[0]);
-    glGenBuffers(1, &vbo[1]);
+    glGenBuffers(2, vbo);
     glBindVertexArray(0);
 }
 
+// 셰이더 프로그램 생성 함수들
 void make_shaderProgram() {
     make_vertexShaders();
     make_fragmentShaders();
@@ -238,6 +283,7 @@ void make_fragmentShaders() {
     }
 }
 
+// 파일 읽기 함수
 char* filetobuf(const char* file) {
     FILE* fptr;
     long length;
