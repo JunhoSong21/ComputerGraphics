@@ -44,7 +44,7 @@ void draw_spiral(SPIRAL* spiral);
 void addSpiral(GLfloat x, GLfloat y, bool isLine);
 void changeBackgroundColor();
 
-int main(int argc, char** argv)
+GLvoid main(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
@@ -96,7 +96,7 @@ void make_shaderProgram()
     glUseProgram(shaderProgramID);
 }
 
-void Keyboard(unsigned char key, int x, int y)
+GLvoid Keyboard(unsigned char key, int x, int y)
 {
     switch (key) {
     case '1': case '2': case '3': case '4': case '5':
@@ -111,7 +111,7 @@ void Keyboard(unsigned char key, int x, int y)
     }
 }
 
-void Mouse(int button, int state, int x, int y) {
+GLvoid Mouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         if (!time_control) {
             changeBackgroundColor();
@@ -123,7 +123,8 @@ void Mouse(int button, int state, int x, int y) {
             s.r = 0;
             s.speed = POINT_SPEED;
             s.count = 0;
-            random_color_single(s.color);
+            for (int i = 0; i < 3; ++i)
+                s.color[i] = 1.f;
 
             time_control = TRUE;
 
@@ -179,13 +180,15 @@ void circle_spiral(GLfloat cx, GLfloat cy, GLfloat r, GLint degree, GLint speed,
             degree -= 180;
         }
 
-        glPointSize(10); // 점 크기 설정
+        glPointSize(9); // 점 크기 설정
         glColor3f(1.0f, 1.0f, 1.0f); // 하얀색으로 설정
         glVertex2f(x, y); // 점 그리기
 
         // 이전 점과 연결된 선 그리기
         if (isLine && i > 0) {
+            glColor3f(1.0f, 1.0f, 1.0f);
             glVertex2f(prevX, prevY); // 이전 점의 위치로 선을 그리기
+            glColor3f(1.0f, 1.0f, 1.0f);
             glVertex2f(x, y); // 현재 점의 위치로 선을 그리기
         }
 
@@ -267,10 +270,6 @@ void draw_spiral(SPIRAL* spiral) {
 
 void changeBackgroundColor()
 {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> dis(100, HEIGHT / 2 - 100);
-
     GLfloat RGB[3];
 
     random_color_single(RGB);

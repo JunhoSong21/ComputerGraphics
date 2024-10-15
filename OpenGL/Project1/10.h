@@ -157,11 +157,11 @@ void random_color(GLfloat color[][3]) {
 void random_color_single(GLfloat* color) {
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dis(1, 1000);
+	std::uniform_real_distribution<float> dis(0.f, 1.f);
 
 	for (int i = 0; i < 3; i++)
 	{
-		GLfloat value = (GLfloat)dis(gen) / (GLfloat)dis(gen);
+		GLfloat value = dis(gen);
 
 		color[i] = value;
 	}
