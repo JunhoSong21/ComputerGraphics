@@ -8,49 +8,55 @@
 #include <gl/freeglut.h>
 #include <gl/freeglut_ext.h>
 
-#define M_PI 3.14159265358979323846
+struct Shape {
+    std::vector<GLfloat> vertices;
+    std::vector<GLfloat> colors;
+    int vectexCount; // 꼭짓점 개수
+
+    bool IsMove;
+    int Direction;
+};
 
 std::random_device rd;
 std::default_random_engine eng(rd());
-std::uniform_real_distribution<float> posDist(-1.0f, 1.0f);
-std::uniform_real_distribution<float> sizeDist(0.1f, 0.5f);
-std::uniform_real_distribution<float> colorDist(0.0f, 1.0f);
+
+float RandomFloat(float f1, float f2) {
+    std::uniform_real_distribution<GLfloat> distr(f1, f2);
+    return distr(eng);
+}
 
 GLuint vao, vertexVBO, colorVBO;
 GLchar* vertexSource, * fragmentSource;
 GLuint vertexShader, fragmentShader;
 GLuint shaderProgramID;
 
-struct Shape {
-    std::vector<float> vertices;
-    std::vector<float> colors;
-};
-
-// OpenGL function declarations
 GLvoid drawScene();
 GLvoid Reshape(int w, int h);
 GLvoid Mouse(int button, int state, int x, int y);
 GLvoid Motion(int x, int y);
+
 void InitBuffer();
 void make_shaderProgram();
 void make_vertexShaders();
 void make_fragmentShaders();
 char* filetobuf(const char* file);
 
-std::vector<Shape> shapes;
+void makeShapes();
+void drawShapes();
+void makeDot();
+void makeLine();
+void makeTriangle();
+void makeRectangle();
+void makePentagon();
 
-Shape createRandomLine();
-Shape createRandomTriangle();
-Shape createRandomRectangle();
-Shape createRandomPentagon();
-Shape createRandomPoint();
+std::vector<std::vector<Shape>> shapes;
 
 GLvoid main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(800, 600);
-    glutCreateWindow("Shape Combination Example");
+    glutCreateWindow("Example 12");
 
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK) {
@@ -61,14 +67,7 @@ GLvoid main(int argc, char** argv) {
     InitBuffer();
     make_shaderProgram();
 
-    // Create random shapes
-    for (int i = 0; i < 3; i++) {
-        shapes.push_back(createRandomLine());
-        shapes.push_back(createRandomTriangle());
-        shapes.push_back(createRandomRectangle());
-        shapes.push_back(createRandomPentagon());
-        shapes.push_back(createRandomPoint());
-    }
+    makeShapes();
 
     glutDisplayFunc(drawScene);
     glutReshapeFunc(Reshape);
@@ -78,132 +77,9 @@ GLvoid main(int argc, char** argv) {
     glutMainLoop();
 }
 
-Shape createRandomLine() {
-    Shape line;
-    float x1 = posDist(eng);
-    float y1 = posDist(eng);
-    float x2 = posDist(eng);
-    float y2 = posDist(eng);
-
-    line.vertices = { x1, y1, x2, y2 };
-    line.colors = { colorDist(eng), colorDist(eng), colorDist(eng),
-                    colorDist(eng), colorDist(eng), colorDist(eng) };
-    return line;
-}
-
-Shape createRandomTriangle() {
-    Shape triangle;
-    float size = sizeDist(eng);
-
-    triangle.vertices = {
-        posDist(eng), posDist(eng),
-        posDist(eng), posDist(eng),
-        posDist(eng), posDist(eng)
-    };
-    triangle.colors = {
-        colorDist(eng), colorDist(eng), colorDist(eng),
-        colorDist(eng), colorDist(eng), colorDist(eng),
-        colorDist(eng), colorDist(eng), colorDist(eng)
-    };
-    return triangle;
-}
-
-Shape createRandomRectangle() {
-    Shape rectangle;
-    float width = sizeDist(eng);
-    float height = sizeDist(eng);
-    float x = posDist(eng);
-    float y = posDist(eng);
-
-    rectangle.vertices = {
-        x, y,
-        x + width, y,
-        x + width, y - height,
-        x, y - height
-    };
-    rectangle.colors = {
-        colorDist(eng), colorDist(eng), colorDist(eng),
-        colorDist(eng), colorDist(eng), colorDist(eng),
-        colorDist(eng), colorDist(eng), colorDist(eng),
-        colorDist(eng), colorDist(eng), colorDist(eng)
-    };
-    return rectangle;
-}
-
-Shape createRandomPentagon() {
-    Shape pentagon;
-    float size = sizeDist(eng);
-    float x = posDist(eng);
-    float y = posDist(eng);
-
-    pentagon.vertices = {
-        x, y,
-        x + size * cos(2 * M_PI / 5 * 0), y + size * sin(2 * M_PI / 5 * 0),
-        x + size * cos(2 * M_PI / 5 * 1), y + size * sin(2 * M_PI / 5 * 1),
-        x + size * cos(2 * M_PI / 5 * 2), y + size * sin(2 * M_PI / 5 * 2),
-        x + size * cos(2 * M_PI / 5 * 3), y + size * sin(2 * M_PI / 5 * 3)
-    };
-    pentagon.colors = {
-        colorDist(eng), colorDist(eng), colorDist(eng),
-        colorDist(eng), colorDist(eng), colorDist(eng),
-        colorDist(eng), colorDist(eng), colorDist(eng),
-        colorDist(eng), colorDist(eng), colorDist(eng),
-        colorDist(eng), colorDist(eng), colorDist(eng)
-    };
-    return pentagon;
-}
-
-Shape createRandomPoint() {
-    Shape point;
-    point.vertices = { posDist(eng), posDist(eng) };
-    point.colors = { colorDist(eng), colorDist(eng), colorDist(eng) };
-    return point;
-}
-
 GLvoid drawScene() {
+    glColor4f(1.f, 1.f, 1.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT);
-
-    for (const auto& shape : shapes) {
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
-
-        glGenBuffers(1, &vertexVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-        glBufferData(GL_ARRAY_BUFFER, shape.vertices.size() * sizeof(float), shape.vertices.data(), GL_STATIC_DRAW);
-
-        glGenBuffers(1, &colorVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, colorVBO);
-        glBufferData(GL_ARRAY_BUFFER, shape.colors.size() * sizeof(float), shape.colors.data(), GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, colorVBO);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-        if (shape.vertices.size() == 2) {
-            glDrawArrays(GL_POINTS, 0, 1);
-        }
-        else if (shape.vertices.size() == 4) {
-            glDrawArrays(GL_QUADS, 0, 4);
-        }
-        else if (shape.vertices.size() == 6) {
-            glDrawArrays(GL_TRIANGLES, 0, 3);
-        }
-        else if (shape.vertices.size() == 10) {
-            glDrawArrays(GL_POLYGON, 0, 5);
-        }
-        else {
-            glDrawArrays(GL_LINES, 0, 2);
-        }
-
-        glBindVertexArray(0);
-        glDeleteBuffers(1, &vertexVBO);
-        glDeleteBuffers(1, &colorVBO);
-        glDeleteVertexArrays(1, &vao);
-    }
 
     glutSwapBuffers();
 }
@@ -218,6 +94,64 @@ GLvoid Mouse(int button, int state, int x, int y) {
 
 GLvoid Motion(int x, int y) {
     glutPostRedisplay();
+}
+
+void makeShapes() {
+    for (int i = 0; i < 3; ++i) {
+        makeDot();
+        makeLine();
+        makeTriangle();
+        makeRectangle();
+        makePentagon();
+    }
+}
+
+void drawShapes() {
+
+}
+
+void makeDot() {
+    Shape newDot;
+
+    GLfloat baseX = RandomFloat(-0.9f, 0.9f);
+    GLfloat baseY = RandomFloat(-0.9f, 0.9f);
+
+    newDot.vertices = {
+        baseX + 0.01f, baseY + 0.01f, 1.f,
+        baseX - 0.01f, baseY + 0.01f, 1.f,
+        baseX - 0.01f, baseY - 0.01f, 1.f,
+        baseX + 0.01f, baseY - 0.01f, 1.f
+    };
+
+    newDot.colors = {
+        RandomFloat(0.f, 1.f), RandomFloat(0.f, 1.f), RandomFloat(0.f, 1.f),
+        RandomFloat(0.f, 1.f), RandomFloat(0.f, 1.f), RandomFloat(0.f, 1.f),
+        RandomFloat(0.f, 1.f), RandomFloat(0.f, 1.f), RandomFloat(0.f, 1.f),
+        RandomFloat(0.f, 1.f), RandomFloat(0.f, 1.f), RandomFloat(0.f, 1.f)
+    };
+
+    newDot.vectexCount = 1;
+    newDot.Direction = 1; // 의미 없는 초기화
+    newDot.IsMove = false;
+
+    shapes[0].push_back(newDot);
+}
+
+void makeLine() {
+    Shape newLine;
+
+}
+
+void makeTriangle() {
+
+}
+
+void makeRectangle() {
+
+}
+
+void makePentagon() {
+
 }
 
 void InitBuffer() {
