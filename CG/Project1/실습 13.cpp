@@ -14,8 +14,8 @@
 std::random_device rd;
 std::default_random_engine eng(rd());
 
-float RandomFloat(float f1, float f2) {
-    std::uniform_real_distribution<GLfloat> distr(f1, f2);
+int RandomInt(int f1, int f2) {
+    std::uniform_int_distribution<GLint> distr(f1, f2);
     return distr(eng);
 }
 
@@ -45,6 +45,19 @@ void makeTetra1();
 void makeTetra2();
 void makeTetra3();
 void makeTetra4();
+
+void Allfalse();
+
+bool IsCube1 = false;
+bool IsCube2 = false;
+bool IsCube3 = false;
+bool IsCube4 = false;
+bool IsCube5 = false;
+bool IsCube6 = false;
+bool IsTetra1 = false;
+bool IsTetra2 = false;
+bool IsTetra3 = false;
+bool IsTetra4 = false;
 
 GLvoid main(int argc, char** argv) {
     glutInit(&argc, argv);
@@ -80,10 +93,27 @@ GLvoid drawScene() {
     glUseProgram(shaderProgramID);
 
     drawXYline();
-    makeCube2(); // µÞ¸é
-    makeCube3(); // À­¸é
-    makeCube1(); // ¾Õ¸é
-   
+    
+    if (IsCube2)
+        makeCube2(); // µÞ¸é
+    if (IsCube4)
+        makeCube4(); // ¾Æ·§¸é
+    if (IsCube5)
+        makeCube5(); // ¿ÞÂÊ¸é
+    if (IsCube6)
+        makeCube6(); // ¿À¸¥ÂÊ¸é
+    if (IsCube3)
+        makeCube3(); // À­¸é
+    if (IsCube1)
+        makeCube1(); // ¾Õ¸é
+    if (IsTetra1)
+        makeTetra1(); // ¾Æ·§¸é
+    if (IsTetra2)
+        makeTetra2(); // µÞ¸é
+    if (IsTetra3)
+        makeTetra3(); // ¿À¸¥ÂÊ¸é
+    if (IsTetra4)
+        makeTetra4(); // ¾Õ¸é
 
     glutSwapBuffers();
 }
@@ -95,27 +125,111 @@ GLvoid Reshape(int w, int h) {
 GLvoid Keyboard(unsigned char key, int x, int y) {
     switch (key) {
     case '1':
+        Allfalse();
+        IsCube1 = true;
         break;
     case '2':
+        Allfalse();
+        IsCube2 = true;
         break;
     case '3':
+        Allfalse();
+        IsCube3 = true;
         break;
     case '4':
+        Allfalse();
+        IsCube4 = true;
         break;
     case '5':
+        Allfalse();
+        IsCube5 = true;
         break;
     case '6':
+        Allfalse();
+        IsCube6 = true;
         break;
     case '7':
+        Allfalse();
+        IsTetra1 = true;
         break;
     case '8':
+        Allfalse();
+        IsTetra2 = true;
         break;
     case '9':
+        Allfalse();
+        IsTetra3 = true;
         break;
-    case 'c':
+    case '0':
+        Allfalse();
+        IsTetra4 = true;
         break;
-    case 't':
+    case 'c': {
+        int a = 0, b = 0;
+
+        while (a == b) {
+            a = RandomInt(1, 6);
+            b = RandomInt(1, 6);
+        }
+
+        Allfalse();
+        if (a == 1)
+            IsCube1 = true;
+        else if (a == 2)
+            IsCube2 = true;
+        else if (a == 3)
+            IsCube3 = true;
+        else if (a == 4)
+            IsCube4 = true;
+        else if (a == 5)
+            IsCube5 = true;
+        else if (a == 6)
+            IsCube6 = true;
+
+        if (b == 1)
+            IsCube1 = true;
+        else if (b == 2)
+            IsCube2 = true;
+        else if (b == 3)
+            IsCube3 = true;
+        else if (b == 4)
+            IsCube4 = true;
+        else if (b == 5)
+            IsCube5 = true;
+        else if (b == 6)
+            IsCube6 = true;
+
         break;
+    }
+    case 't': {
+        int a = 0, b = 0;
+
+        while (a == b) {
+            a = RandomInt(1, 4);
+            b = RandomInt(1, 4);
+        }
+
+        Allfalse();
+        if (a == 1)
+            IsTetra1 = true;
+        else if (a == 2)
+            IsTetra2 = true;
+        else if (a == 3)
+            IsTetra3 = true;
+        else if (a == 4)
+            IsTetra4 = true;
+
+        if (b == 1)
+            IsTetra1 = true;
+        else if (b == 2)
+            IsTetra2 = true;
+        else if (b == 3)
+            IsTetra3 = true;
+        else if (b == 4)
+            IsTetra4 = true;
+
+        break;
+    }
     }
 
     glutPostRedisplay();
@@ -123,7 +237,7 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 
 void drawXYline() {
     glm::mat4 None = glm::mat4(1.f);
-    None = glm::rotate(None, glm::radians(0.f), glm::vec3(1.0, 0.0, 0.0));
+    None = glm::rotate(None, glm::radians(0.f), glm::vec3(1.0, 1.0, 1.0));
 
     std::vector<GLfloat> vertices = {
         0.f, 1.f, 1.f,
@@ -320,32 +434,380 @@ void makeCube3() { // À­¸é
     glDeleteBuffers(1, &ibo);
 }
 
-void makeCube4() {
+void makeCube4() { // ¾Æ·§¸é
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 Rotate = glm::mat4(1.f);
+    RotateX = glm::rotate(RotateX, glm::radians(10.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(10.f), glm::vec3(0.0, 1.0, 0.0));
 
+    Rotate = RotateY * RotateX;
+
+    std::vector<GLfloat> vertices = {
+        -0.3f, -0.3f, -0.3f,
+        0.3f, -0.3f, -0.3f,
+        0.3f, -0.3f, 0.3f,
+        -0.3f, -0.3f, 0.3f
+    };
+
+    std::vector<GLfloat> colors = {
+        0.f, 0.5f, 0.5f,
+        0.f, 0.5f, 0.5f,
+        0.f, 0.5f, 0.5f,
+        0.f, 0.5f, 0.5f
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2, 2, 3, 0
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Rotate));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
 }
 
-void makeCube5() {
+void makeCube5() { // ¿ÞÂÊ¸é
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 Rotate = glm::mat4(1.f);
+    RotateX = glm::rotate(RotateX, glm::radians(10.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(10.f), glm::vec3(0.0, 1.0, 0.0));
 
+    Rotate = RotateY * RotateX;
+
+    std::vector<GLfloat> vertices = {
+        -0.3f, -0.3f, -0.3f,
+        -0.3f, -0.3f, 0.3f,
+        -0.3f, 0.3f, 0.3f,
+        -0.3f, 0.3f, -0.3f
+    };
+
+    std::vector<GLfloat> colors = {
+        0.5f, 0.5f, 0.f,
+        0.5f, 0.5f, 0.f,
+        0.5f, 0.5f, 0.f,
+        0.5f, 0.5f, 0.f
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2, 2, 3, 0
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Rotate));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
 }
 
 void makeCube6() {
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 Rotate = glm::mat4(1.f);
+    RotateX = glm::rotate(RotateX, glm::radians(10.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(10.f), glm::vec3(0.0, 1.0, 0.0));
 
+    Rotate = RotateY * RotateX;
+
+    std::vector<GLfloat> vertices = {
+        0.3f, -0.3f, 0.3f,
+        0.3f, -0.3f, -0.3f,
+        0.3f, 0.3f, -0.3f,
+        0.3f, 0.3f, 0.3f
+    };
+
+    std::vector<GLfloat> colors = {
+        0.5f, 0.f, 0.5f,
+        0.5f, 0.f, 0.5f,
+        0.5f, 0.f, 0.5f,
+        0.5f, 0.f, 0.5f
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2, 2, 3, 0
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Rotate));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
 }
 
-void makeTetra1() {
+void makeTetra1() { // ¾Æ·§¸é
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 Rotate = glm::mat4(1.f);
+    RotateX = glm::rotate(RotateX, glm::radians(10.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(10.f), glm::vec3(0.0, 1.0, 0.0));
 
+    Rotate = RotateY * RotateX;
+
+    std::vector<GLfloat> vertices = {
+        -0.3f, -0.1f, 0.f,
+        0.1f, -0.1f, -0.2f,
+        0.1f, -0.1f, 0.2f,
+    };
+
+    std::vector<GLfloat> colors = {
+        0.5f, 1.f, 0.f,
+        0.5f, 1.f, 0.f,
+        0.5f, 1.f, 0.f,
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Rotate));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
 }
 
-void makeTetra2() {
+void makeTetra2() { // µÞ¸é
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 Rotate = glm::mat4(1.f);
+    RotateX = glm::rotate(RotateX, glm::radians(10.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(10.f), glm::vec3(0.0, 1.0, 0.0));
 
+    Rotate = RotateY * RotateX;
+
+    std::vector<GLfloat> vertices = {
+        0.1f, -0.1f, -0.2f,
+        -0.3f, -0.1f, 0.f,
+        0.f, 0.3f, 0.f
+    };
+
+    std::vector<GLfloat> colors = {
+        0.5f, 0.f, 0.5f,
+        0.5f, 0.f, 0.5f,
+        0.5f, 0.f, 0.5f,
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Rotate));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
 }
 
 void makeTetra3() {
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 Rotate = glm::mat4(1.f);
+    RotateX = glm::rotate(RotateX, glm::radians(10.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(10.f), glm::vec3(0.0, 1.0, 0.0));
 
+    Rotate = RotateY * RotateX;
+
+    std::vector<GLfloat> vertices = {
+        0.1f, -0.1f, 0.2f,
+        0.1f, -0.1f, -0.2f,
+        0.f, 0.3f, 0.f
+    };
+
+    std::vector<GLfloat> colors = {
+        0.f, 0.5f, 1.f,
+        0.f, 0.5f, 1.f,
+        0.f, 0.5f, 1.f,
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Rotate));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
 }
 
 void makeTetra4() {
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 Rotate = glm::mat4(1.f);
+    RotateX = glm::rotate(RotateX, glm::radians(10.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(10.f), glm::vec3(0.0, 1.0, 0.0));
 
+    Rotate = RotateY * RotateX;
+
+    std::vector<GLfloat> vertices = {
+        -0.3f, -0.1f, 0.f,
+        0.1f, -0.1f, 0.2f,
+        0.f, 0.3f, 0.f
+    };
+
+    std::vector<GLfloat> colors = {
+        1.f, 0.2f, 0.f,
+        1.f, 0.2f, 0.f,
+        1.f, 0.2f, 0.f,
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Rotate));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
+}
+
+void Allfalse() {
+    IsCube1 = false;
+    IsCube2 = false;
+    IsCube3 = false;
+    IsCube4 = false;
+    IsCube5 = false;
+    IsCube6 = false;
+    IsTetra1 = false;
+    IsTetra2 = false;
+    IsTetra3 = false;
+    IsTetra4 = false;
 }
 
 void InitBuffer() {
