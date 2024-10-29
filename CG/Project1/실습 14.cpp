@@ -18,6 +18,7 @@ GLuint shaderProgramID;
 GLvoid drawScene();
 GLvoid Reshape(int w, int h);
 GLvoid Keyboard(unsigned char key, int x, int y);
+GLvoid SpecialKeyboard(int key, int x, int y);
 GLvoid Timer(int value);
 
 void InitBuffer();
@@ -65,6 +66,7 @@ GLvoid main(int argc, char** argv) {
     glutDisplayFunc(drawScene);
     glutReshapeFunc(Reshape);
     glutKeyboardFunc(Keyboard);
+    glutSpecialFunc(SpecialKeyboard);
     glutTimerFunc(16, Timer, 1);
 
     glutMainLoop();
@@ -136,20 +138,32 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
         else
             YRotating = -1;
         break;
-    case GL_LEFT:
-        Xmove -= 1.f;
-        break;
-    case GL_RIGHT:
-        break;
-    case GLUT_UP:
-        break;
-    case GLUT_DOWN:
-        break;
     case 's':
         XRotating = 0;
         YRotating = 0;
         XRotate = 30.f;
         YRotate = -30.f;
+        Xmove = 0.f;
+        Ymove = 0.f;
+        break;
+    }
+
+    glutPostRedisplay();
+}
+
+GLvoid SpecialKeyboard(int key, int x, int y) {
+    switch (key) {
+    case GLUT_KEY_LEFT:
+        Xmove -= 0.05f;
+        break;
+    case GLUT_KEY_RIGHT:
+        Xmove += 0.05f;
+        break;
+    case GLUT_KEY_UP:
+        Ymove += 0.05f;
+        break;
+    case GLUT_KEY_DOWN:
+        Ymove -= 0.05f;
         break;
     }
 
@@ -228,11 +242,11 @@ void drawCube() {
     glm::mat4 RotateY = glm::mat4(1.f);
     glm::mat4 Conversion = glm::mat4(1.f);
     
-    Translate = glm::translate(Translate, glm::vec3(Xmove, 0.f, 0.f));
+    Translate = glm::translate(Translate, glm::vec3(Xmove, Ymove, 0.f));
     RotateX = glm::rotate(RotateX, glm::radians(XRotate), glm::vec3(1.0, 0.0, 0.0));
     RotateY = glm::rotate(RotateY, glm::radians(YRotate), glm::vec3(0.0, 1.0, 0.0));
 
-    Conversion = RotateY * RotateX * Translate;
+    Conversion = Translate * RotateY * RotateX;
 
     std::vector<GLfloat> vertices = {
         -0.3f, -0.3f, 0.3f,
