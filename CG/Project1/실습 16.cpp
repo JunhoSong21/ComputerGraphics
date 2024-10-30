@@ -24,13 +24,12 @@ GLuint shaderProgramID;
 GLvoid drawScene();
 GLvoid Reshape(int w, int h);
 GLvoid Keyboard(unsigned char key, int x, int y);
+GLvoid SpecialKeyboard(int key, int x, int y);
 GLvoid Timer(int value);
 
 void drawXYZline();
 void drawCube();
-void drawCylinder();
 void drawSphere();
-void drawWideCylinder();
 
 void InitBuffer();
 void make_shaderProgram();
@@ -52,7 +51,8 @@ float RightRotateY = 0.f;
 float LeftRotateX = 0.f;
 float LeftRotateY = 0.f;
 
-bool IsChange = false;
+float Xmove = 0.f;
+float Zmove = 0.f;
 
 GLvoid main(int argc, char** argv) {
     glutInit(&argc, argv);
@@ -83,6 +83,7 @@ GLvoid main(int argc, char** argv) {
     glutDisplayFunc(drawScene);
     glutReshapeFunc(Reshape);
     glutKeyboardFunc(Keyboard);
+    glutSpecialFunc(SpecialKeyboard);
     glutTimerFunc(16, Timer, 1);
 
     glutMainLoop();
@@ -97,15 +98,9 @@ GLvoid drawScene() {
     glDisable(GL_DEPTH_TEST);
     drawXYZline();
 
-    if (!IsChange) {
-        drawCube();
-        drawCylinder();
-    }
-    else {
-        drawSphere();
-        drawWideCylinder();
-    }
-
+    drawCube();   
+    drawSphere();
+        
     glutSwapBuffers();
 }
 
@@ -170,13 +165,10 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
             RevolveY = 0;
         break;
     case 'R':
-        if(RevolveY != -1)
+        if (RevolveY != -1)
             RevolveY = -1;
         else
             RevolveY = 0;
-        break;
-    case 'c':
-        IsChange = !IsChange;
         break;
     case 's':
         IsSelfXRotate = 0;
@@ -191,7 +183,25 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
         LeftRotateY = 0;
         point.x = 0.7f * cos(angle);
         point.z = 0.7f * sin(angle);
-        IsChange = false;
+        break;
+    }
+
+    glutPostRedisplay();
+}
+
+GLvoid SpecialKeyboard(int key, int x, int y) {
+    switch (key) {
+    case GLUT_KEY_LEFT:
+        Xmove -= 0.1f;
+        break;
+    case GLUT_KEY_RIGHT:
+        Xmove += 0.1f;
+        break;
+    case GLUT_KEY_UP:
+        Zmove -= 0.1f;
+        break;
+    case GLUT_KEY_DOWN:
+        Zmove += 0.1f;
         break;
     }
 
@@ -316,11 +326,12 @@ void drawCube() {
     SelfRotationX = glm::rotate(SelfRotationX, glm::radians(RightRotateX), glm::vec3(point.x, 0.0, 0.0));
     SelfRotationY = glm::rotate(SelfRotationY, glm::radians(RightRotateY), glm::vec3(0.0, 1.0, 0.0));
     Translate = glm::translate(Translate, glm::vec3(point.x, 0.f, point.z));
+    Translate = glm::translate(Translate, glm::vec3(Xmove, 0.f, Zmove));
     RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
     RotateY = glm::rotate(RotateY, glm::radians(-30.f), glm::vec3(0.0, 1.0, 0.0));
     SelfRevolve = glm::rotate(SelfRevolve, glm::radians(-58.f * angle), glm::vec3(0.0, 1.0, 0.0));
 
-    Conversion =  RotateX * RotateY * Translate * SelfRotationX * SelfRotationY * SelfRevolve;
+    Conversion = RotateX * RotateY * Translate * SelfRotationX * SelfRotationY * SelfRevolve;
 
     std::vector<GLfloat> vertices = {
         -0.2f, -0.2f, 0.2f,
@@ -381,32 +392,6 @@ void drawCube() {
     glDeleteBuffers(1, &ibo);
 }
 
-void drawCylinder() {
-    glm::mat4 SelfRotationX = glm::mat4(1.f);
-    glm::mat4 SelfRotationY = glm::mat4(1.f);
-    glm::mat4 Translate = glm::mat4(1.f);
-    glm::mat4 RotateX = glm::mat4(1.f);
-    glm::mat4 RotateY = glm::mat4(1.f);
-    glm::mat4 SelfRevolve = glm::mat4(1.f);
-    glm::mat4 Conversion = glm::mat4(1.f);
-
-    SelfRotationX = glm::rotate(SelfRotationX, glm::radians(LeftRotateX), glm::vec3(point.x, 0.0, 0.0));
-    SelfRotationY = glm::rotate(SelfRotationY, glm::radians(LeftRotateY), glm::vec3(0.0, 1.0, 0.0));
-    Translate = glm::translate(Translate, glm::vec3(-point.x, 0.f, -point.z));
-    RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
-    RotateY = glm::rotate(RotateY, glm::radians(-30.f), glm::vec3(0.0, 1.0, 0.0));
-    SelfRevolve = glm::rotate(SelfRevolve, glm::radians(-58.f * angle), glm::vec3(0.0, 1.0, 0.0));
-
-    Conversion = RotateX * RotateY * Translate * SelfRotationX * SelfRotationY * SelfRevolve;
-
-    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
-
-    qobj = gluNewQuadric();
-    gluQuadricDrawStyle(qobj, GLU_LINE);
-    gluCylinder(qobj, 0.3, 0.0, 0.6, 20, 8);
-}
-
 void drawSphere() {
     glm::mat4 SelfRotationX = glm::mat4(1.f);
     glm::mat4 SelfRotationY = glm::mat4(1.f);
@@ -418,7 +403,8 @@ void drawSphere() {
 
     SelfRotationX = glm::rotate(SelfRotationX, glm::radians(LeftRotateX), glm::vec3(point.x, 0.0, 0.0));
     SelfRotationY = glm::rotate(SelfRotationY, glm::radians(LeftRotateY), glm::vec3(0.0, 1.0, 0.0));
-    Translate = glm::translate(Translate, glm::vec3(point.x, 0.f, point.z));
+    Translate = glm::translate(Translate, glm::vec3(-point.x, 0.f, -point.z));
+    Translate = glm::translate(Translate, glm::vec3(Xmove, 0.f, Zmove));
     RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
     RotateY = glm::rotate(RotateY, glm::radians(-30.f), glm::vec3(0.0, 1.0, 0.0));
     SelfRevolve = glm::rotate(SelfRevolve, glm::radians(-58.f * angle), glm::vec3(0.0, 1.0, 0.0));
@@ -431,32 +417,6 @@ void drawSphere() {
     qobj = gluNewQuadric();
     gluQuadricDrawStyle(qobj, GLU_LINE);
     gluSphere(qobj, 0.3, 20, 20);
-}
-
-void drawWideCylinder() {
-    glm::mat4 SelfRotationX = glm::mat4(1.f);
-    glm::mat4 SelfRotationY = glm::mat4(1.f);
-    glm::mat4 Translate = glm::mat4(1.f);
-    glm::mat4 RotateX = glm::mat4(1.f);
-    glm::mat4 RotateY = glm::mat4(1.f);
-    glm::mat4 SelfRevolve = glm::mat4(1.f);
-    glm::mat4 Conversion = glm::mat4(1.f);
-
-    SelfRotationX = glm::rotate(SelfRotationX, glm::radians(LeftRotateX), glm::vec3(point.x, 0.0, 0.0));
-    SelfRotationY = glm::rotate(SelfRotationY, glm::radians(LeftRotateY), glm::vec3(0.0, 1.0, 0.0));
-    Translate = glm::translate(Translate, glm::vec3(-point.x, 0.f, -point.z));
-    RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
-    RotateY = glm::rotate(RotateY, glm::radians(-30.f), glm::vec3(0.0, 1.0, 0.0));
-    SelfRevolve = glm::rotate(SelfRevolve, glm::radians(-58.f * angle), glm::vec3(0.0, 1.0, 0.0));
-
-    Conversion = RotateX * RotateY * Translate * SelfRotationX * SelfRotationY * SelfRevolve;
-
-    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
-
-    qobj = gluNewQuadric();
-    gluQuadricDrawStyle(qobj, GLU_LINE);
-    gluCylinder(qobj, 0.3, 0.3, 0.6, 20, 8);
 }
 
 void InitBuffer() {
