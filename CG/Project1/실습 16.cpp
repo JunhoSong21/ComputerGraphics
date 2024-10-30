@@ -52,6 +52,7 @@ float LeftRotateX = 0.f;
 float LeftRotateY = 0.f;
 
 float Xmove = 0.f;
+float Ymove = 0.f;
 float Zmove = 0.f;
 
 GLvoid main(int argc, char** argv) {
@@ -169,6 +170,24 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
             RevolveY = -1;
         else
             RevolveY = 0;
+        break;
+    case 'q':
+        Xmove += 0.1f;
+        break;
+    case 'Q':
+        Xmove -= 0.1f;
+        break;
+    case 'w':
+        Ymove += 0.1f;
+        break;
+    case 'W':
+        Ymove -= 0.1f;
+        break;
+    case 'e':
+        Zmove += 0.1f;
+        break;
+    case 'E':
+        Zmove -= 0.1f;
         break;
     case 's':
         IsSelfXRotate = 0;
@@ -326,7 +345,7 @@ void drawCube() {
     SelfRotationX = glm::rotate(SelfRotationX, glm::radians(RightRotateX), glm::vec3(point.x, 0.0, 0.0));
     SelfRotationY = glm::rotate(SelfRotationY, glm::radians(RightRotateY), glm::vec3(0.0, 1.0, 0.0));
     Translate = glm::translate(Translate, glm::vec3(point.x, 0.f, point.z));
-    Translate = glm::translate(Translate, glm::vec3(Xmove, 0.f, Zmove));
+    Translate = glm::translate(Translate, glm::vec3(Xmove, Ymove, Zmove));
     RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
     RotateY = glm::rotate(RotateY, glm::radians(-30.f), glm::vec3(0.0, 1.0, 0.0));
     SelfRevolve = glm::rotate(SelfRevolve, glm::radians(-58.f * angle), glm::vec3(0.0, 1.0, 0.0));
@@ -404,7 +423,7 @@ void drawSphere() {
     SelfRotationX = glm::rotate(SelfRotationX, glm::radians(LeftRotateX), glm::vec3(point.x, 0.0, 0.0));
     SelfRotationY = glm::rotate(SelfRotationY, glm::radians(LeftRotateY), glm::vec3(0.0, 1.0, 0.0));
     Translate = glm::translate(Translate, glm::vec3(-point.x, 0.f, -point.z));
-    Translate = glm::translate(Translate, glm::vec3(Xmove, 0.f, Zmove));
+    Translate = glm::translate(Translate, glm::vec3(Xmove, Ymove, Zmove));
     RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
     RotateY = glm::rotate(RotateY, glm::radians(-30.f), glm::vec3(0.0, 1.0, 0.0));
     SelfRevolve = glm::rotate(SelfRevolve, glm::radians(-58.f * angle), glm::vec3(0.0, 1.0, 0.0));
