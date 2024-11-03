@@ -30,6 +30,8 @@ GLvoid Timer(int value);
 void drawXYZline();
 void drawCube();
 void drawSphere();
+void drawSpiral();
+void allFalse();
 
 void InitBuffer();
 void make_shaderProgram();
@@ -38,22 +40,21 @@ void make_fragmentShaders();
 char* filetobuf(const char* file);
 
 float angle = 0.f;
+float halfLine = 0.f;
 GLUquadricObj* qobj;
 int RevolveY = 0;
-
-int IsSelfXRotate = 0;
-int IsSelfYRotate = 0;
-bool IsLeftRotate = false;
-bool IsRightRotate = false;
-
-float RightRotateX = 0.f;
-float RightRotateY = 0.f;
-float LeftRotateX = 0.f;
-float LeftRotateY = 0.f;
 
 float Xmove = 0.f;
 float Ymove = 0.f;
 float Zmove = 0.f;
+float NoneMscaleV = 1.f;
+float MscaleV = 1.f;
+
+bool Animation1 = false;
+bool Animation2 = false;
+bool Animation3 = false;
+bool Animation4 = false;
+bool Animation5 = false;
 
 GLvoid main(int argc, char** argv) {
     glutInit(&argc, argv);
@@ -61,7 +62,7 @@ GLvoid main(int argc, char** argv) {
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(800, 800);
 
-    glutCreateWindow("Example 15");
+    glutCreateWindow("Example 16");
 
     glewExperimental = GL_TRUE;
 
@@ -101,7 +102,9 @@ GLvoid drawScene() {
 
     drawCube();   
     drawSphere();
-        
+    
+    drawSpiral();
+
     glutSwapBuffers();
 }
 
@@ -112,64 +115,24 @@ GLvoid Reshape(int w, int h) {
 GLvoid Keyboard(unsigned char key, int x, int y) {
     switch (key) {
     case '1':
-        IsRightRotate = false;
-        IsLeftRotate = true;
+        allFalse();
+        Animation1 = true;
         break;
     case '2':
-        IsRightRotate = true;
-        IsLeftRotate = false;
+        allFalse();
+        Animation2 = true;
         break;
     case '3':
-        IsRightRotate = true;
-        IsLeftRotate = true;
+        allFalse();
+        Animation3 = true;
         break;
-    case 'x':
-        if (IsSelfXRotate != 1) {
-            IsSelfXRotate = 1;
-            IsRightRotate = true;
-            IsLeftRotate = true;
-        }
-        else
-            IsSelfXRotate = 0;
+    case '4':
+        allFalse();
+        Animation4 = true;
         break;
-    case 'X':
-        if (IsSelfXRotate != -1) {
-            IsSelfXRotate = -1;
-            IsRightRotate = true;
-            IsLeftRotate = true;
-        }
-        else
-            IsSelfXRotate = 0;
-        break;
-    case 'y':
-        if (IsSelfYRotate != 1) {
-            IsSelfYRotate = 1;
-            IsRightRotate = true;
-            IsLeftRotate = true;
-        }
-        else
-            IsSelfYRotate = 0;
-        break;
-    case 'Y':
-        if (IsSelfYRotate != -1) {
-            IsSelfYRotate = -1;
-            IsRightRotate = true;
-            IsLeftRotate = true;
-        }
-        else
-            IsSelfYRotate = 0;
-        break;
-    case 'r':
-        if (RevolveY != 1)
-            RevolveY = 1;
-        else
-            RevolveY = 0;
-        break;
-    case 'R':
-        if (RevolveY != -1)
-            RevolveY = -1;
-        else
-            RevolveY = 0;
+    case '5':
+        allFalse();
+        Animation5 = true;
         break;
     case 'q':
         Xmove += 0.1f;
@@ -189,19 +152,21 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
     case 'E':
         Zmove -= 0.1f;
         break;
+    case 'p':
+        NoneMscaleV += 0.01f;
+        break;
+    case 'P':
+        NoneMscaleV -= 0.01f;
+        break;
+    case 'o':
+        MscaleV += 0.01f;
+        break;
+    case 'O':
+        MscaleV -= 0.01f;
+        break;
     case 's':
-        IsSelfXRotate = 0;
-        IsSelfYRotate = 0;
-        IsRightRotate = false;
-        IsLeftRotate = false;
         angle = 0.f;
         RevolveY = 0;
-        RightRotateX = 0;
-        RightRotateY = 0;
-        LeftRotateX = 0;
-        LeftRotateY = 0;
-        point.x = 0.7f * cos(angle);
-        point.z = 0.7f * sin(angle);
         break;
     }
 
@@ -228,45 +193,6 @@ GLvoid SpecialKeyboard(int key, int x, int y) {
 }
 
 GLvoid Timer(int value) {
-    if (IsSelfXRotate == 1) {
-        if (IsRightRotate)
-            RightRotateX += 0.2f;
-        if (IsLeftRotate)
-            LeftRotateX += 0.2f;
-    }
-
-    if (IsSelfXRotate == -1) {
-        if (IsRightRotate)
-            RightRotateX -= 0.2f;
-        if (IsLeftRotate)
-            LeftRotateY -= 0.2f;
-    }
-
-    if (IsSelfYRotate == 1) {
-        if (IsRightRotate)
-            RightRotateY += 0.2f;
-        if (IsLeftRotate)
-            LeftRotateY += 0.2f;
-    }
-
-    if (IsSelfYRotate == -1) {
-        if (IsRightRotate)
-            RightRotateY -= 0.2f;
-        if (IsLeftRotate)
-            LeftRotateY -= 0.2f;
-    }
-
-    if (RevolveY == 1) {
-        angle += 0.01f;
-        point.x = 0.7f * cos(angle);
-        point.z = 0.7f * sin(angle);
-    }
-    else if (RevolveY == -1) {
-        angle -= 0.01f;
-        point.x = 0.7f * cos(angle);
-        point.z = 0.7f * sin(angle);
-    }
-
     glutPostRedisplay();
     glutTimerFunc(16, Timer, 1);
 }
@@ -334,23 +260,21 @@ void drawXYZline() {
 }
 
 void drawCube() {
-    glm::mat4 SelfRotationX = glm::mat4(1.f);
-    glm::mat4 SelfRotationY = glm::mat4(1.f);
     glm::mat4 Translate = glm::mat4(1.f);
     glm::mat4 RotateX = glm::mat4(1.f);
     glm::mat4 RotateY = glm::mat4(1.f);
-    glm::mat4 SelfRevolve = glm::mat4(1.f);
+    glm::mat4 AfterScale = glm::mat4(1.f);
+    glm::mat4 BeforeScale = glm::mat4(1.f);
     glm::mat4 Conversion = glm::mat4(1.f);
 
-    SelfRotationX = glm::rotate(SelfRotationX, glm::radians(RightRotateX), glm::vec3(point.x, 0.0, 0.0));
-    SelfRotationY = glm::rotate(SelfRotationY, glm::radians(RightRotateY), glm::vec3(0.0, 1.0, 0.0));
     Translate = glm::translate(Translate, glm::vec3(point.x, 0.f, point.z));
     Translate = glm::translate(Translate, glm::vec3(Xmove, Ymove, Zmove));
     RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
     RotateY = glm::rotate(RotateY, glm::radians(-30.f), glm::vec3(0.0, 1.0, 0.0));
-    SelfRevolve = glm::rotate(SelfRevolve, glm::radians(-58.f * angle), glm::vec3(0.0, 1.0, 0.0));
+    AfterScale = glm::scale(AfterScale, glm::vec3(MscaleV, MscaleV, MscaleV));
+    BeforeScale = glm::scale(BeforeScale, glm::vec3(NoneMscaleV, NoneMscaleV, NoneMscaleV));
 
-    Conversion = RotateX * RotateY * Translate * SelfRotationX * SelfRotationY * SelfRevolve;
+    Conversion = AfterScale * RotateX * RotateY * Translate * BeforeScale;
 
     std::vector<GLfloat> vertices = {
         -0.2f, -0.2f, 0.2f,
@@ -412,23 +336,21 @@ void drawCube() {
 }
 
 void drawSphere() {
-    glm::mat4 SelfRotationX = glm::mat4(1.f);
-    glm::mat4 SelfRotationY = glm::mat4(1.f);
     glm::mat4 Translate = glm::mat4(1.f);
     glm::mat4 RotateX = glm::mat4(1.f);
     glm::mat4 RotateY = glm::mat4(1.f);
-    glm::mat4 SelfRevolve = glm::mat4(1.f);
+    glm::mat4 AfterScale = glm::mat4(1.f);
+    glm::mat4 BeforeScale = glm::mat4(1.f);
     glm::mat4 Conversion = glm::mat4(1.f);
 
-    SelfRotationX = glm::rotate(SelfRotationX, glm::radians(LeftRotateX), glm::vec3(point.x, 0.0, 0.0));
-    SelfRotationY = glm::rotate(SelfRotationY, glm::radians(LeftRotateY), glm::vec3(0.0, 1.0, 0.0));
     Translate = glm::translate(Translate, glm::vec3(-point.x, 0.f, -point.z));
     Translate = glm::translate(Translate, glm::vec3(Xmove, Ymove, Zmove));
     RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
     RotateY = glm::rotate(RotateY, glm::radians(-30.f), glm::vec3(0.0, 1.0, 0.0));
-    SelfRevolve = glm::rotate(SelfRevolve, glm::radians(-58.f * angle), glm::vec3(0.0, 1.0, 0.0));
+    AfterScale = glm::scale(AfterScale, glm::vec3(MscaleV, MscaleV, MscaleV));
+    BeforeScale = glm::scale(BeforeScale, glm::vec3(NoneMscaleV, NoneMscaleV, NoneMscaleV));
 
-    Conversion = RotateX * RotateY * Translate * SelfRotationX * SelfRotationY * SelfRevolve;
+    Conversion = AfterScale * RotateX * RotateY * Translate * BeforeScale;
 
     unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
     glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
@@ -436,6 +358,49 @@ void drawSphere() {
     qobj = gluNewQuadric();
     gluQuadricDrawStyle(qobj, GLU_LINE);
     gluSphere(qobj, 0.3, 20, 20);
+}
+
+void drawSpiral() {
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 Conversion = glm::mat4(1.f);
+
+    RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(-30.f), glm::vec3(0.0, 1.0, 0.0));
+
+    Conversion = RotateX * RotateY;
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+
+    float radiusIncrement = 0.0015f; // 각도에 따라 반지름이 증가하는 정도
+    float currentRadius = 0.0f;   // 초기 반지름
+    int numPoints = 700;         // 스파이럴의 포인트 수
+    float angleIncrement = 0.1f;  // 각도 증가량 (라디안)
+    float x = 0.f;
+    float y = 0.f;
+    float z = 0.f;
+    float angle = 0.f;
+
+    glBegin(GL_LINE_STRIP); // 선으로 연결된 점을 그리기 위해 사용
+    for (int i = 0; i < numPoints; ++i) {
+        angle = i * angleIncrement; // 각도 계산
+        currentRadius += radiusIncrement; // 반지름 증가
+
+        x = currentRadius * cos(angle);
+        z = currentRadius * sin(angle);
+
+        glVertex3f(x, y, z); // 스파이럴의 점 추가
+    }
+    glEnd();
+}
+
+void allFalse() {
+    Animation1 = false;
+    Animation2 = false;
+    Animation3 = false;
+    Animation4 = false;
+    Animation5 = false;
 }
 
 void InitBuffer() {
