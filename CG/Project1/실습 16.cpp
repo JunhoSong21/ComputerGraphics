@@ -50,6 +50,7 @@ float Zmove = 0.f;
 float NoneMscaleV = 1.f;
 float MscaleV = 1.f;
 
+bool KeyboardControl = true;
 bool Animation1 = false;
 bool Animation2 = false;
 bool Animation3 = false;
@@ -135,33 +136,53 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
         Animation5 = true;
         break;
     case 'q':
+        allFalse();
+        KeyboardControl = true;
         Xmove += 0.1f;
         break;
     case 'Q':
+        allFalse();
+        KeyboardControl = true;
         Xmove -= 0.1f;
         break;
     case 'w':
+        allFalse();
+        KeyboardControl = true;
         Ymove += 0.1f;
         break;
     case 'W':
+        allFalse();
+        KeyboardControl = true;
         Ymove -= 0.1f;
         break;
     case 'e':
+        allFalse();
+        KeyboardControl = true;
         Zmove += 0.1f;
         break;
     case 'E':
+        allFalse();
+        KeyboardControl = true;
         Zmove -= 0.1f;
         break;
     case 'p':
+        allFalse();
+        KeyboardControl = true;
         NoneMscaleV += 0.01f;
         break;
     case 'P':
+        allFalse();
+        KeyboardControl = true;
         NoneMscaleV -= 0.01f;
         break;
     case 'o':
+        allFalse();
+        KeyboardControl = true;
         MscaleV += 0.01f;
         break;
     case 'O':
+        allFalse();
+        KeyboardControl = true;
         MscaleV -= 0.01f;
         break;
     case 's':
@@ -174,6 +195,9 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 }
 
 GLvoid SpecialKeyboard(int key, int x, int y) {
+    allFalse();
+    KeyboardControl = true;
+
     switch (key) {
     case GLUT_KEY_LEFT:
         Xmove -= 0.1f;
@@ -337,6 +361,7 @@ void drawCube() {
 
 void drawSphere() {
     glm::mat4 Translate = glm::mat4(1.f);
+    glm::mat4 KeyTranslate = glm::mat4(1.f);
     glm::mat4 RotateX = glm::mat4(1.f);
     glm::mat4 RotateY = glm::mat4(1.f);
     glm::mat4 AfterScale = glm::mat4(1.f);
@@ -344,13 +369,14 @@ void drawSphere() {
     glm::mat4 Conversion = glm::mat4(1.f);
 
     Translate = glm::translate(Translate, glm::vec3(-point.x, 0.f, -point.z));
-    Translate = glm::translate(Translate, glm::vec3(Xmove, Ymove, Zmove));
+    KeyTranslate = glm::translate(KeyTranslate, glm::vec3(Xmove, Ymove, Zmove));
     RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
     RotateY = glm::rotate(RotateY, glm::radians(-30.f), glm::vec3(0.0, 1.0, 0.0));
     AfterScale = glm::scale(AfterScale, glm::vec3(MscaleV, MscaleV, MscaleV));
     BeforeScale = glm::scale(BeforeScale, glm::vec3(NoneMscaleV, NoneMscaleV, NoneMscaleV));
 
-    Conversion = AfterScale * RotateX * RotateY * Translate * BeforeScale;
+    if (KeyboardControl)
+        Conversion = AfterScale * RotateX * RotateY * KeyTranslate * Translate * BeforeScale;
 
     unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
     glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
@@ -396,6 +422,7 @@ void drawSpiral() {
 }
 
 void allFalse() {
+    KeyboardControl = false;
     Animation1 = false;
     Animation2 = false;
     Animation3 = false;
