@@ -50,12 +50,22 @@ float Zmove = 0.f;
 float NoneMscaleV = 1.f;
 float MscaleV = 1.f;
 
+float Xani = 0.f;
+float Yani = 0.f;
+float Zani = 0.f;
+
 bool KeyboardControl = true;
 bool Animation1 = false;
 bool Animation2 = false;
 bool Animation3 = false;
 bool Animation4 = false;
 bool Animation5 = false;
+
+float AniRadiusIncrement = 0.0015f; // 각도에 따라 반지름이 증가하는 정도
+float AniCurrentRadius = 0.0f;   // 초기 반지름
+int AniNumPoints = 700;         // 스파이럴의 포인트 수
+float AniAngleIncrement = 0.1f;  // 각도 증가량 (라디안)
+int AniI = 0;
 
 GLvoid main(int argc, char** argv) {
     glutInit(&argc, argv);
@@ -217,6 +227,19 @@ GLvoid SpecialKeyboard(int key, int x, int y) {
 }
 
 GLvoid Timer(int value) {
+    if (Animation1) {
+        angle = AniI * AniAngleIncrement;
+        AniCurrentRadius += AniRadiusIncrement;
+
+        Xani = AniCurrentRadius * cos(angle);
+        Zani = AniCurrentRadius * sin(angle);
+        AniI += 1;
+        if (AniI >= 700) {
+            AniI = 0;
+            AniCurrentRadius = 0.0f;
+            angle = 0.f;
+        }
+    }
     glutPostRedisplay();
     glutTimerFunc(16, Timer, 1);
 }
@@ -362,21 +385,27 @@ void drawCube() {
 void drawSphere() {
     glm::mat4 Translate = glm::mat4(1.f);
     glm::mat4 KeyTranslate = glm::mat4(1.f);
+    glm::mat4 AniTranslate = glm::mat4(1.f);
     glm::mat4 RotateX = glm::mat4(1.f);
     glm::mat4 RotateY = glm::mat4(1.f);
     glm::mat4 AfterScale = glm::mat4(1.f);
     glm::mat4 BeforeScale = glm::mat4(1.f);
+    glm::mat4 AniBeforeScale = glm::mat4(1.f);
     glm::mat4 Conversion = glm::mat4(1.f);
 
     Translate = glm::translate(Translate, glm::vec3(-point.x, 0.f, -point.z));
     KeyTranslate = glm::translate(KeyTranslate, glm::vec3(Xmove, Ymove, Zmove));
+    AniTranslate = glm::translate(AniTranslate, glm::vec3(Xani, Yani, Zani));
     RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
     RotateY = glm::rotate(RotateY, glm::radians(-30.f), glm::vec3(0.0, 1.0, 0.0));
     AfterScale = glm::scale(AfterScale, glm::vec3(MscaleV, MscaleV, MscaleV));
     BeforeScale = glm::scale(BeforeScale, glm::vec3(NoneMscaleV, NoneMscaleV, NoneMscaleV));
+    AniBeforeScale = glm::scale(AniBeforeScale, glm::vec3(0.5f, 0.5f, 0.5f));
 
     if (KeyboardControl)
         Conversion = AfterScale * RotateX * RotateY * KeyTranslate * Translate * BeforeScale;
+    else
+        Conversion = AfterScale * RotateX * RotateY * AniTranslate * AniBeforeScale;
 
     unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
     glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
