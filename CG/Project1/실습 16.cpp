@@ -53,6 +53,7 @@ float MscaleV = 1.f;
 float Xani = 0.f;
 float Yani = 0.f;
 float Zani = 0.f;
+float AniScale = 0.5f;
 
 bool KeyboardControl = true;
 bool Animation1 = false;
@@ -114,7 +115,8 @@ GLvoid drawScene() {
     drawCube();   
     drawSphere();
     
-    drawSpiral();
+    if(Animation1)
+        drawSpiral();
 
     glutSwapBuffers();
 }
@@ -139,6 +141,8 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
         break;
     case '4':
         allFalse();
+        Xani = 0.5f;
+        Yani = 0.5f;
         Animation4 = true;
         break;
     case '5':
@@ -240,6 +244,48 @@ GLvoid Timer(int value) {
             angle = 0.f;
         }
     }
+    else if (Animation2) {
+        Yani = 0;
+        Zani = 0;
+        Xani = cos(angle);
+        angle += 0.05f;
+    }
+    else if (Animation3) {
+        Xani = 0.7f * cos(angle);
+        Yani = 0.f;
+        Zani = 0.7f * sin(angle);
+        angle += 0.05f;
+    }
+    else if (Animation4) {
+        Zani = 0;
+        if (Xani >= 0) {
+            if (Yani >= 0) {
+                Xani += 0.01f;
+                Yani -= 0.01f;
+            }
+            else {
+                Xani -= 0.01f;
+                Yani -= 0.01f;
+            }
+        }
+        else {
+            if (Yani >= 0) {
+                Xani += 0.01f;
+                Yani += 0.01f;
+            }
+            else {
+                Xani -= 0.01f;
+                Yani += 0.01f;
+            }
+        }
+    }
+    else if (Animation5) {
+        Xani = 0.7f * cos(angle);
+        Yani = 0.f;
+        Zani = 0.7f * sin(angle);
+        angle += 0.05f;
+        AniScale = 0.7f * cos(angle);
+    }
     glutPostRedisplay();
     glutTimerFunc(16, Timer, 1);
 }
@@ -308,20 +354,33 @@ void drawXYZline() {
 
 void drawCube() {
     glm::mat4 Translate = glm::mat4(1.f);
+    glm::mat4 KeyTranslate = glm::mat4(1.f);
+    glm::mat4 AniTranslate = glm::mat4(1.f);
     glm::mat4 RotateX = glm::mat4(1.f);
     glm::mat4 RotateY = glm::mat4(1.f);
     glm::mat4 AfterScale = glm::mat4(1.f);
     glm::mat4 BeforeScale = glm::mat4(1.f);
+    glm::mat4 AniBeforeScale = glm::mat4(1.f);
+    glm::mat4 AniRotate = glm::mat4(1.f);
+
     glm::mat4 Conversion = glm::mat4(1.f);
 
     Translate = glm::translate(Translate, glm::vec3(point.x, 0.f, point.z));
-    Translate = glm::translate(Translate, glm::vec3(Xmove, Ymove, Zmove));
+    KeyTranslate = glm::translate(KeyTranslate, glm::vec3(Xmove, Ymove, Zmove));
+    AniTranslate = glm::translate(AniTranslate, glm::vec3(-Xani, -Yani, -Zani));
     RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
     RotateY = glm::rotate(RotateY, glm::radians(-30.f), glm::vec3(0.0, 1.0, 0.0));
     AfterScale = glm::scale(AfterScale, glm::vec3(MscaleV, MscaleV, MscaleV));
     BeforeScale = glm::scale(BeforeScale, glm::vec3(NoneMscaleV, NoneMscaleV, NoneMscaleV));
+    AniBeforeScale = glm::scale(AniBeforeScale, glm::vec3(AniScale, AniScale, AniScale));
+    AniRotate = glm::rotate(AniRotate, glm::radians(angle * 10), glm::vec3(0.0, 1.0, 0.0));
 
-    Conversion = AfterScale * RotateX * RotateY * Translate * BeforeScale;
+    if (KeyboardControl)
+        Conversion = AfterScale * RotateX * RotateY * KeyTranslate * Translate * BeforeScale;
+    else if (Animation5)
+        Conversion = AfterScale * RotateX * RotateY * AniTranslate * AniBeforeScale * AniRotate;
+    else
+        Conversion = AfterScale * RotateX * RotateY * AniTranslate * AniBeforeScale;
 
     std::vector<GLfloat> vertices = {
         -0.2f, -0.2f, 0.2f,
@@ -391,6 +450,8 @@ void drawSphere() {
     glm::mat4 AfterScale = glm::mat4(1.f);
     glm::mat4 BeforeScale = glm::mat4(1.f);
     glm::mat4 AniBeforeScale = glm::mat4(1.f);
+    glm::mat4 AniRotate = glm::mat4(1.f);
+
     glm::mat4 Conversion = glm::mat4(1.f);
 
     Translate = glm::translate(Translate, glm::vec3(-point.x, 0.f, -point.z));
@@ -400,10 +461,13 @@ void drawSphere() {
     RotateY = glm::rotate(RotateY, glm::radians(-30.f), glm::vec3(0.0, 1.0, 0.0));
     AfterScale = glm::scale(AfterScale, glm::vec3(MscaleV, MscaleV, MscaleV));
     BeforeScale = glm::scale(BeforeScale, glm::vec3(NoneMscaleV, NoneMscaleV, NoneMscaleV));
-    AniBeforeScale = glm::scale(AniBeforeScale, glm::vec3(0.5f, 0.5f, 0.5f));
+    AniBeforeScale = glm::scale(AniBeforeScale, glm::vec3(AniScale, AniScale, AniScale));
+    AniRotate = glm::rotate(AniRotate, glm::radians(angle * 10), glm::vec3(0.0, 1.0, 0.0));
 
     if (KeyboardControl)
         Conversion = AfterScale * RotateX * RotateY * KeyTranslate * Translate * BeforeScale;
+    else if (Animation5)
+        Conversion = AfterScale * RotateX * RotateY * AniTranslate * AniBeforeScale * AniRotate;
     else
         Conversion = AfterScale * RotateX * RotateY * AniTranslate * AniBeforeScale;
 
@@ -457,6 +521,12 @@ void allFalse() {
     Animation3 = false;
     Animation4 = false;
     Animation5 = false;
+
+    Xani = 0.f;
+    Yani = 0.f;
+    Zani = 0.f;
+    angle = 0.f;
+    AniScale = 0.5f;
 }
 
 void InitBuffer() {
