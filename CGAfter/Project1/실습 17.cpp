@@ -21,12 +21,14 @@ GLvoid Reshape(int w, int h);
 void drawXYZline();
 
 void InitBuffer();
-void TransformationBind();
-void LineVertexBind(std::vector<GLfloat> vertices, std::vector<GLfloat> colors, std::vector<GLuint> index);
 void make_shaderProgram();
 void make_vertexShaders();
 void make_fragmentShaders();
 char* filetobuf(const char* file);
+
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 5.0f);
+glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 GLvoid main(int argc, char** argv) {
     glutInit(&argc, argv);
@@ -73,11 +75,6 @@ GLvoid Reshape(int w, int h) {
     glViewport(0, 0, w, h);
 }
 
-GLvoid Keyboard(unsigned char key, int x, int y) {
-   
-    glutPostRedisplay();
-}
-
 void drawXYZline() {
     glm::mat4 RotateX = glm::mat4(1.f);
     glm::mat4 RotateY = glm::mat4(1.f);
@@ -114,9 +111,22 @@ void drawXYZline() {
         4, 5
     };
 
-    TransformationBind(Conversion, view, projection);
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform");
+    unsigned int projectionLocation = glGetUniformLocation(shaderProgramID, "projectionTransform");
 
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+    glm::mat4 mTransform = glm::mat4(1.0f);
+    mTransform = Conversion;
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &mTransform[0][0]);
+
+    glm::mat4 vTransform = glm::mat4(1.0f);
+    vTransform = glm::lookAt(cameraPos, cameraDirection, cameraUp);
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &vTransform[0][0]);
+
+    glm::mat4 pTransform = glm::mat4(1.0f);
+    pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+    glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, &pTransform[0][0]);
+
     glBindVertexArray(vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
@@ -138,8 +148,6 @@ void drawXYZline() {
 
     glBindVertexArray(0);
     glDeleteBuffers(1, &ibo);
-
-    LineVertexBind(vertices, colors, index);
 }
 
 void InitBuffer() {
@@ -147,28 +155,6 @@ void InitBuffer() {
     glBindVertexArray(vao);
     glGenBuffers(2, vbo);
     glBindVertexArray(0);
-}
-
-void TransformationBind(glm::mat4 Conversion, glm::mat4 view, glm::mat4 projection) {
-    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
-    unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform");
-    unsigned int projectionLocation = glGetUniformLocation(shaderProgramID, "projectionTransform");
-
-    glm::mat4 mTransform = glm::mat4(1.0f);
-    mTransform = Conversion;
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &mTransform[0][0]);
-
-    glm::mat4 vTransform = glm::mat4(1.0f);
-    vTransform = glm::lookAt(cameraPos, cameraDirection, cameraUp);
-    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &vTransform[0][0]);
-
-    glm::mat4 pTransform = glm::mat4(1.0f);
-    pTransform = glm::perspective(glm::radians(60.0f), (float)800 / (float)800, 0.1f, 200.0f);
-    glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, &pTransform[0][0]);
-}
-
-void LineVertexBind(std::vector<GLfloat> vertices, std::vector<GLfloat> colors, std::vector<GLuint> index) {
-    
 }
 
 void make_shaderProgram() {
