@@ -17,8 +17,22 @@ GLuint shaderProgramID;
 
 GLvoid drawScene();
 GLvoid Reshape(int w, int h);
+GLvoid Keyboard(unsigned char key, int x, int y);
+GLvoid Timer(int value);
 
 void drawXYZline();
+void drawCubeBack();
+void drawCubeUnder();
+void drawCubeRight();
+void drawCubeLeft();
+void drawCubeFront();
+void drawCubeUp();
+
+void drawPyramidBottom();
+void drawPyramidBack();
+void drawPyramidRight();
+void drawPyramidLeft();
+void drawPyramidFront();
 
 void InitBuffer();
 void make_shaderProgram();
@@ -26,9 +40,30 @@ void make_vertexShaders();
 void make_fragmentShaders();
 char* filetobuf(const char* file);
 
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 5.0f);
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 2.0f);
 glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+bool DepthTest = true;
+bool IsAllMove = false;
+
+bool IsCube = true;
+bool IsCubeBackMove = false;
+bool IsCubeSideMove = false;
+bool IsCubeFrontMove = false;
+bool IsCubeUpMove = false;
+
+bool IsPyramidAllMove = false;
+
+float Allangle = 0.0f;
+
+float PyramidAllangle = 0.0f;
+
+float Backangle = 0.0f;
+float BackScale = 1.0f;
+float SideUp = 0.0f;
+float Frontangle = 0.0f;
+float Upangle = 0.0f;
 
 GLvoid main(int argc, char** argv) {
     glutInit(&argc, argv);
@@ -48,25 +83,48 @@ GLvoid main(int argc, char** argv) {
         std::cout << "GLEW Initialize\n";
 
     glEnable(GL_DEPTH_TEST);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     make_shaderProgram();
     InitBuffer();
 
     glutDisplayFunc(drawScene);
     glutReshapeFunc(Reshape);
+    glutKeyboardFunc(Keyboard);
+    glutTimerFunc(16, Timer, 1);
 
     glutMainLoop();
 }
 
 GLvoid drawScene() {
-    glClearColor(1.f, 1.f, 1.f, 1.f);
+    glClearColor(0.f, 0.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(shaderProgramID);
 
-    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
     drawXYZline();
+
+    if(DepthTest)
+        glEnable(GL_DEPTH_TEST);
+    else if(!DepthTest)
+        glDisable(GL_DEPTH_TEST);
+
+    if (IsCube) {
+        drawCubeBack();
+        drawCubeUnder();
+        drawCubeRight();
+        drawCubeLeft();
+        drawCubeFront();
+        drawCubeUp();
+    }
+    else if (!IsCube) {
+        drawPyramidBottom();
+        drawPyramidBack();
+        drawPyramidRight();
+        drawPyramidLeft();
+        drawPyramidFront();
+    }
 
     glutSwapBuffers();
 }
@@ -75,13 +133,97 @@ GLvoid Reshape(int w, int h) {
     glViewport(0, 0, w, h);
 }
 
+GLvoid Keyboard(unsigned char key, int x, int y) {
+    switch (key) {
+    case 'y':
+        IsAllMove = !IsAllMove;
+        break;
+    case 'h':
+        DepthTest = !DepthTest;
+        break;
+    case 'p':
+        break;
+    case 'b':
+        IsCube = true;
+        IsCubeBackMove = !IsCubeBackMove;
+        break;
+    case 's':
+        IsCube = true;
+        IsCubeSideMove = !IsCubeSideMove;
+        break;
+    case 'f':
+        IsCube = true;
+        IsCubeFrontMove = !IsCubeFrontMove;
+        break;
+    case 't':
+        IsCube = true;
+        IsCubeUpMove = !IsCubeUpMove;
+        break;
+    case 'o':
+        IsCube = false;
+        IsPyramidAllMove = !IsPyramidAllMove;
+        break;
+    case 'r':
+        IsCube = false;
+        break;
+    }
+
+    glutPostRedisplay();
+}
+
+GLvoid Timer(int value) {
+    if (IsAllMove)
+        Allangle += 0.5f;
+    if (IsCube) {
+        if (IsCubeBackMove) {
+            Backangle += 0.03f;
+            BackScale = cos(Backangle) / 2 + 0.5f;
+        }
+
+        if (IsCubeSideMove) {
+            if (SideUp < 0.5f)
+                SideUp += 0.01f;
+        }
+        else if (!IsCubeSideMove) {
+            if (SideUp > 0.0f)
+                SideUp -= 0.01f;
+        }
+
+        if (IsCubeFrontMove) {
+            if (Frontangle < 90.0f)
+                Frontangle += 0.4f;
+        }
+        else if (!IsCubeFrontMove) {
+            if (Frontangle > 0.f)
+                Frontangle -= 0.4f;
+        }
+
+        if (IsCubeUpMove) {
+            Upangle += 0.5f;
+        }
+    }
+    else if (!IsCube) {
+        if (IsPyramidAllMove) {
+            if (PyramidAllangle < 242.0f)
+                PyramidAllangle += 0.5f;
+        }
+        else if (!IsPyramidAllMove) {
+            if (PyramidAllangle > 0.0f)
+                PyramidAllangle -= 0.5f;
+        }
+    }
+
+    glutPostRedisplay();
+    glutTimerFunc(16, Timer, 1);
+}
+
 void drawXYZline() {
     glm::mat4 RotateX = glm::mat4(1.f);
     glm::mat4 RotateY = glm::mat4(1.f);
     glm::mat4 Conversion = glm::mat4(1.f);
 
     RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
-    RotateY = glm::rotate(RotateY, glm::radians(-30.f), glm::vec3(0.0, 1.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
 
     Conversion = RotateX * RotateY;
 
@@ -97,12 +239,12 @@ void drawXYZline() {
     };
 
     std::vector<GLfloat> colors = {
-        0.f, 0.f, 0.f,
-        0.f, 0.f, 0.f,
-        0.f, 0.f, 0.f,
-        0.f, 0.f, 0.f,
-        0.f, 0.f, 0.f,
-        0.f, 0.f, 0.f,
+        0.f, 1.f, 0.f,
+        0.f, 1.f, 0.f,
+        1.f, 0.f, 0.f,
+        1.f, 0.f, 0.f,
+        0.f, 0.f, 1.f,
+        0.f, 0.f, 1.f,
     };
 
     std::vector<GLuint> index = {
@@ -145,6 +287,671 @@ void drawXYZline() {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
 
     glDrawElements(GL_LINES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
+}
+
+void drawCubeBack() {
+    glm::mat4 Scale = glm::mat4(1.f);
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 Translate = glm::mat4(1.f);
+    glm::mat4 AllRotate = glm::mat4(1.f);
+    glm::mat4 Conversion = glm::mat4(1.f);
+
+    Scale = glm::scale(Scale, glm::vec3(BackScale, BackScale, 1.0f));
+    RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
+    AllRotate = glm::rotate(AllRotate, glm::radians(Allangle), glm::vec3(0.0, 1.0, 0.0));
+    Translate = glm::translate(Translate, glm::vec3(0.f, 0.f, -0.3f));
+    
+    Conversion = RotateX * RotateY * AllRotate * Translate * Scale;
+
+    std::vector<GLfloat> vertices = {
+        0.3f, -0.3f, 0.f,
+        -0.3f, -0.3f, 0.f,
+        -0.3f, 0.3f, 0.f,
+        0.3f, 0.3f, 0.f
+    };
+
+    std::vector<GLfloat> colors = {
+        1.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 0.0f,
+        0.0f, 0.5f, 1.0f,
+        1.0f, 1.0f, 1.0f
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
+}
+
+void drawCubeUnder() {
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 Translate = glm::mat4(1.f);
+    glm::mat4 AllRotate = glm::mat4(1.f);
+    glm::mat4 Conversion = glm::mat4(1.f);
+
+    RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
+    AllRotate = glm::rotate(AllRotate, glm::radians(Allangle), glm::vec3(0.0, 1.0, 0.0));
+    Translate = glm::translate(Translate, glm::vec3(0.f, -0.3f, 0.f));
+
+    Conversion =  RotateX * RotateY * AllRotate * Translate;
+
+    std::vector<GLfloat> vertices = {
+        -0.3f, 0.f, -0.3f,
+        0.3f, 0.f, -0.3f,
+        0.3f, 0.f, 0.3f,
+        -0.3f, 0.f, 0.3f
+    };
+
+    std::vector<GLfloat> colors = {
+        1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 0.0f
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
+}
+
+void drawCubeRight() {
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 Translate = glm::mat4(1.f);
+    glm::mat4 AllRotate = glm::mat4(1.f);
+    glm::mat4 MoveTranslate = glm::mat4(1.f);
+    glm::mat4 Conversion = glm::mat4(1.f);
+
+    RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
+    Translate = glm::translate(Translate, glm::vec3(0.3f, 0.f, 0.f));
+    MoveTranslate = glm::translate(MoveTranslate, glm::vec3(0.f, SideUp, 0.f));
+    AllRotate = glm::rotate(AllRotate, glm::radians(Allangle), glm::vec3(0.0, 1.0, 0.0));
+
+    Conversion = RotateX * RotateY * AllRotate * MoveTranslate * Translate;
+
+    std::vector<GLfloat> vertices = {
+        0.f, -0.3f, 0.3f,
+        0.f, -0.3f, -0.3f,
+        0.f, 0.3f, -0.3f,
+        0.f, 0.3f, 0.3f
+    };
+
+    std::vector<GLfloat> colors = {
+        0.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        0.5f, 0.5f, 0.5f
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
+}
+
+void drawCubeLeft() {
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 Translate = glm::mat4(1.f);
+    glm::mat4 AllRotate = glm::mat4(1.f);
+    glm::mat4 MoveTranslate = glm::mat4(1.f);
+    glm::mat4 Conversion = glm::mat4(1.f);
+
+    RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
+    Translate = glm::translate(Translate, glm::vec3(-0.3f, 0.f, 0.f));
+    MoveTranslate = glm::translate(MoveTranslate, glm::vec3(0.f, SideUp, 0.f));
+    AllRotate = glm::rotate(AllRotate, glm::radians(Allangle), glm::vec3(0.0, 1.0, 0.0));
+
+    Conversion = RotateX * RotateY * AllRotate * MoveTranslate * Translate;
+
+    std::vector<GLfloat> vertices = {
+        0.f, 0.3f, 0.3f,
+        0.f, 0.3f, -0.3f,
+        0.f, -0.3f, -0.3f,
+        0.f, -0.3f, 0.3f
+    };
+
+    std::vector<GLfloat> colors = {
+        0.0f, 1.0f, 0.0f,
+        0.0f, 0.5f, 1.0f,
+        1.0f, 0.0f, 0.0f,
+        1.0f, 1.0f, 0.0f
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
+}
+
+void drawCubeFront() {
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 Translate = glm::mat4(1.f);
+    glm::mat4 UpTranslate = glm::mat4(1.f);
+    glm::mat4 DownTranslate = glm::mat4(1.f);
+    glm::mat4 RotateUnder = glm::mat4(1.f);
+    glm::mat4 AllRotate = glm::mat4(1.f);
+    glm::mat4 Conversion = glm::mat4(1.f);
+
+    RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
+    Translate = glm::translate(Translate, glm::vec3(0.f, 0.f, 0.3f));
+    RotateUnder = glm::rotate(RotateUnder, glm::radians(Frontangle), glm::vec3(1.0, 0.0, 0.0));
+    UpTranslate = glm::translate(UpTranslate, glm::vec3(0.f, 0.3f, 0.f));
+    DownTranslate = glm::translate(DownTranslate, glm::vec3(0.f, -0.3f, 0.f));
+    AllRotate = glm::rotate(AllRotate, glm::radians(Allangle), glm::vec3(0.0, 1.0, 0.0));
+
+    Conversion = RotateX * RotateY * AllRotate * Translate * DownTranslate * RotateUnder * UpTranslate;
+
+    std::vector<GLfloat> vertices = {
+        -0.3f, -0.3f, 0.f,
+        0.3f, -0.3f, 0.f,
+        0.3f, 0.3f, 0.f,
+        -0.3f, 0.3f, 0.f
+    };
+
+    std::vector<GLfloat> colors = {
+        1.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 1.0f,
+        0.5f, 0.5f, 0.5f,
+        0.0f, 1.0f, 0.0f
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
+}
+
+void drawCubeUp() {
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 UpRotate = glm::mat4(1.f);
+    glm::mat4 Translate = glm::mat4(1.f);
+    glm::mat4 AllRotate = glm::mat4(1.f);
+    glm::mat4 Conversion = glm::mat4(1.f);
+
+    RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
+    Translate = glm::translate(Translate, glm::vec3(0.f, 0.3f, 0.f));
+    UpRotate = glm::rotate(UpRotate, glm::radians(Upangle), glm::vec3(1.0, 0.0, 0.0));
+    AllRotate = glm::rotate(AllRotate, glm::radians(Allangle), glm::vec3(0.0, 1.0, 0.0));
+
+    Conversion = RotateX * RotateY * AllRotate * Translate * UpRotate;
+
+    std::vector<GLfloat> vertices = {
+        0.3f, 0.f, -0.3f,
+        -0.3f, 0.f, -0.3f,
+        -0.3f, 0.f, 0.3f,
+        0.3f, 0.f, 0.3f
+    };
+
+    std::vector<GLfloat> colors = {
+        1.0f, 1.0f, 1.0f,
+        0.0f, 0.5f, 1.0f,
+        0.0f, 1.0f, 0.0f,
+        0.5f, 0.5f, 0.5f
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
+}
+
+void drawPyramidBottom() {
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 AllRotate = glm::mat4(1.f);
+    glm::mat4 Conversion = glm::mat4(1.f);
+
+    RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
+    AllRotate = glm::rotate(AllRotate, glm::radians(Allangle), glm::vec3(0.0, 1.0, 0.0));
+
+    Conversion = RotateX * RotateY * AllRotate;
+
+    std::vector<GLfloat> vertices = {
+        -0.3f, 0.f, 0.3f,
+        -0.3f, 0.f, -0.3f,
+        0.3f, 0.f, -0.3f,
+        0.3f, 0.f, 0.3f
+    };
+
+    std::vector<GLfloat> colors = {
+        1.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 0.5f, 1.0f
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
+}
+
+void drawPyramidBack() {
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 PyramidAllRotate = glm::mat4(1.f);
+    glm::mat4 AllRotate = glm::mat4(1.f);
+    glm::mat4 MoveTranslate = glm::mat4(1.f);
+    glm::mat4 BackTranslate = glm::mat4(1.f);
+    glm::mat4 Conversion = glm::mat4(1.f);
+
+    RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
+    PyramidAllRotate = glm::rotate(PyramidAllRotate, glm::radians(PyramidAllangle), glm::vec3(-1.0, 0.0, 0.0));
+    AllRotate = glm::rotate(AllRotate, glm::radians(Allangle), glm::vec3(0.0, 1.0, 0.0));
+    MoveTranslate = glm::translate(MoveTranslate, glm::vec3(0.0f, 0.0f, 0.3f));
+    BackTranslate = glm::translate(BackTranslate, glm::vec3(0.0f, 0.0f, -0.3f));
+
+    Conversion = RotateX * RotateY * AllRotate * BackTranslate * PyramidAllRotate * MoveTranslate;
+
+    std::vector<GLfloat> vertices = {
+        0.3f, 0.f, -0.3f,
+        -0.3f, 0.f, -0.3f,
+        0.0f, 0.5f, 0.0f
+    };
+
+    std::vector<GLfloat> colors = {
+        0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 0.0f,
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
+}
+
+void drawPyramidRight() {
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 PyramidAllRotate = glm::mat4(1.f);
+    glm::mat4 AllRotate = glm::mat4(1.f);
+    glm::mat4 MoveTranslate = glm::mat4(1.f);
+    glm::mat4 BackTranslate = glm::mat4(1.f);
+    glm::mat4 Conversion = glm::mat4(1.f);
+
+    RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
+    PyramidAllRotate = glm::rotate(PyramidAllRotate, glm::radians(PyramidAllangle), glm::vec3(0.0, 0.0, -1.0));
+    AllRotate = glm::rotate(AllRotate, glm::radians(Allangle), glm::vec3(0.0, 1.0, 0.0));
+    MoveTranslate = glm::translate(MoveTranslate, glm::vec3(-0.3f, 0.0f, 0.0f));
+    BackTranslate = glm::translate(BackTranslate, glm::vec3(0.3f, 0.0f, 0.0f));
+
+    Conversion = RotateX * RotateY * AllRotate * BackTranslate * PyramidAllRotate * MoveTranslate;
+
+    std::vector<GLfloat> vertices = {
+        0.3f, 0.f, 0.3f,
+        0.3f, 0.f, -0.3f,
+        0.0f, 0.5f, 0.0f
+    };
+
+    std::vector<GLfloat> colors = {
+        0.0f, 0.5f, 1.0f,
+        0.0f, 1.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
+}
+
+void drawPyramidLeft() {
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 PyramidAllRotate = glm::mat4(1.f);
+    glm::mat4 AllRotate = glm::mat4(1.f);
+    glm::mat4 MoveTranslate = glm::mat4(1.f);
+    glm::mat4 BackTranslate = glm::mat4(1.f);
+    glm::mat4 Conversion = glm::mat4(1.f);
+
+    RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
+    PyramidAllRotate = glm::rotate(PyramidAllRotate, glm::radians(PyramidAllangle), glm::vec3(0.0, 0.0, 1.0));
+    AllRotate = glm::rotate(AllRotate, glm::radians(Allangle), glm::vec3(0.0, 1.0, 0.0));
+    MoveTranslate = glm::translate(MoveTranslate, glm::vec3(0.3f, 0.0f, 0.0f));
+    BackTranslate = glm::translate(BackTranslate, glm::vec3(-0.3f, 0.0f, 0.0f));
+
+    Conversion = RotateX * RotateY * AllRotate * BackTranslate * PyramidAllRotate * MoveTranslate;
+
+    std::vector<GLfloat> vertices = {
+        -0.3f, 0.f, -0.3f,
+        -0.3f, 0.f, 0.3f,
+        0.0f, 0.5f, 0.0f
+    };
+
+    std::vector<GLfloat> colors = {
+        0.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &ibo);
+}
+
+void drawPyramidFront() {
+    glm::mat4 RotateX = glm::mat4(1.f);
+    glm::mat4 RotateY = glm::mat4(1.f);
+    glm::mat4 PyramidAllRotate = glm::mat4(1.f);
+    glm::mat4 AllRotate = glm::mat4(1.f);
+    glm::mat4 MoveTranslate = glm::mat4(1.f);
+    glm::mat4 BackTranslate = glm::mat4(1.f);
+    glm::mat4 Conversion = glm::mat4(1.f);
+
+    RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
+    PyramidAllRotate = glm::rotate(PyramidAllRotate, glm::radians(PyramidAllangle), glm::vec3(1.0, 0.0, 0.0));
+    AllRotate = glm::rotate(AllRotate, glm::radians(Allangle), glm::vec3(0.0, 1.0, 0.0));
+    MoveTranslate = glm::translate(MoveTranslate, glm::vec3(0.0f, 0.0f, -0.3f));
+    BackTranslate = glm::translate(BackTranslate, glm::vec3(0.0f, 0.0f, 0.3f));
+
+    Conversion = RotateX * RotateY * AllRotate * BackTranslate * PyramidAllRotate * MoveTranslate;
+
+    std::vector<GLfloat> vertices = {
+        -0.3f, 0.f, 0.3f,
+        0.3f, 0.f, 0.3f,
+        0.0f, 0.5f, 0.0f
+    };
+
+    std::vector<GLfloat> colors = {
+        1.0f, 1.0f, 0.0f,
+        0.0f, 0.5f, 1.0f,
+        1.0f, 0.0f, 0.0f,
+    };
+
+    std::vector<GLuint> index = {
+        0, 1, 2
+    };
+
+    unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
 
     glBindVertexArray(0);
     glDeleteBuffers(1, &ibo);
