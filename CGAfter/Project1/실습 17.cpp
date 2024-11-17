@@ -65,6 +65,19 @@ float SideUp = 0.0f;
 float Frontangle = 0.0f;
 float Upangle = 0.0f;
 
+int RROpen = -1;
+bool IsPyramidBackMove = false;
+bool IsPyramidRightMove = false;
+bool IsPyramidLeftMove = false;
+bool IsPyramidFrontMove = false;
+
+float PyramidFrontangle = 0.0f;
+float PyramidLeftangle = 0.0f;
+float PyramidRightangle = 0.0f;
+float PyramidBackangle = 0.0f;
+
+bool IsStraight = false;
+
 GLvoid main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -142,6 +155,7 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
         DepthTest = !DepthTest;
         break;
     case 'p':
+        IsStraight = !IsStraight;
         break;
     case 'b':
         IsCube = true;
@@ -165,6 +179,19 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
         break;
     case 'r':
         IsCube = false;
+        RROpen += 1;
+        if (RROpen == 4)
+            RROpen = 0;
+
+        if (RROpen == 0)
+            IsPyramidFrontMove = !IsPyramidFrontMove;
+        else if (RROpen == 1)
+            IsPyramidLeftMove = !IsPyramidLeftMove;
+        else if (RROpen == 2)
+            IsPyramidBackMove = !IsPyramidBackMove;
+        else if (RROpen == 3)
+            IsPyramidRightMove = !IsPyramidRightMove;
+
         break;
     }
 
@@ -210,6 +237,42 @@ GLvoid Timer(int value) {
         else if (!IsPyramidAllMove) {
             if (PyramidAllangle > 0.0f)
                 PyramidAllangle -= 0.5f;
+        }
+
+        if (IsPyramidFrontMove) {
+            if (PyramidFrontangle < 121.0f)
+                PyramidFrontangle += 0.5f;
+        }
+        else if (!IsPyramidFrontMove) {
+            if (PyramidFrontangle > 0.0f)
+                PyramidFrontangle -= 0.5f;
+        }
+
+        if (IsPyramidLeftMove) {
+            if (PyramidLeftangle < 121.0f)
+                PyramidLeftangle += 0.5f;
+        }
+        else if (!IsPyramidLeftMove) {
+            if (PyramidLeftangle > 0.0f)
+                PyramidLeftangle -= 0.5f;
+        }
+
+        if (IsPyramidBackMove) {
+            if (PyramidBackangle < 121.0f)
+                PyramidBackangle += 0.5f;
+        }
+        else if (!IsPyramidBackMove) {
+            if (PyramidBackangle > 0.0f)
+                PyramidBackangle -= 0.5f;
+        }
+
+        if (IsPyramidRightMove) {
+            if (PyramidRightangle < 121.0f)
+                PyramidRightangle += 0.5f;
+        }
+        else if (!IsPyramidRightMove) {
+            if (PyramidRightangle > 0.0f)
+                PyramidRightangle -= 0.5f;
         }
     }
 
@@ -328,7 +391,27 @@ void drawCubeBack() {
     };
 
     unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+    unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform");
+    unsigned int projectionLocation = glGetUniformLocation(shaderProgramID, "projectionTransform");
+
+    glm::mat4 mTransform = glm::mat4(1.0f);
+    mTransform = Conversion;
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &mTransform[0][0]);
+
+    glm::mat4 vTransform = glm::mat4(1.0f);
+    vTransform = glm::lookAt(cameraPos, cameraDirection, cameraUp);
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &vTransform[0][0]);
+
+    glm::mat4 pTransform = glm::mat4(1.0f);
+
+    if (IsStraight)
+        pTransform = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, -2.0f, 2.0f);
+    else if (!IsStraight) {
+        pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 50.0f);
+        pTransform = glm::translate(pTransform, glm::vec3(0.0, 0.0, -5.0f));
+    }
+
+    glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, &pTransform[0][0]);
 
     glBindVertexArray(vao);
 
@@ -387,7 +470,25 @@ void drawCubeUnder() {
     };
 
     unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+    unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform");
+    unsigned int projectionLocation = glGetUniformLocation(shaderProgramID, "projectionTransform");
+
+    glm::mat4 mTransform = glm::mat4(1.0f);
+    mTransform = Conversion;
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &mTransform[0][0]);
+
+    glm::mat4 vTransform = glm::mat4(1.0f);
+    vTransform = glm::lookAt(cameraPos, cameraDirection, cameraUp);
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &vTransform[0][0]);
+
+    glm::mat4 pTransform = glm::mat4(1.0f);
+
+    if (IsStraight)
+        pTransform = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, -2.0f, 2.0f);
+    else if (!IsStraight) {
+        pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 50.0f);
+        pTransform = glm::translate(pTransform, glm::vec3(0.0, 0.0, -5.0f));
+    }
 
     glBindVertexArray(vao);
 
@@ -448,7 +549,25 @@ void drawCubeRight() {
     };
 
     unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+    unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform");
+    unsigned int projectionLocation = glGetUniformLocation(shaderProgramID, "projectionTransform");
+
+    glm::mat4 mTransform = glm::mat4(1.0f);
+    mTransform = Conversion;
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &mTransform[0][0]);
+
+    glm::mat4 vTransform = glm::mat4(1.0f);
+    vTransform = glm::lookAt(cameraPos, cameraDirection, cameraUp);
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &vTransform[0][0]);
+
+    glm::mat4 pTransform = glm::mat4(1.0f);
+
+    if (IsStraight)
+        pTransform = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, -2.0f, 2.0f);
+    else if (!IsStraight) {
+        pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 50.0f);
+        pTransform = glm::translate(pTransform, glm::vec3(0.0, 0.0, -5.0f));
+    }
 
     glBindVertexArray(vao);
 
@@ -509,7 +628,25 @@ void drawCubeLeft() {
     };
 
     unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+    unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform");
+    unsigned int projectionLocation = glGetUniformLocation(shaderProgramID, "projectionTransform");
+
+    glm::mat4 mTransform = glm::mat4(1.0f);
+    mTransform = Conversion;
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &mTransform[0][0]);
+
+    glm::mat4 vTransform = glm::mat4(1.0f);
+    vTransform = glm::lookAt(cameraPos, cameraDirection, cameraUp);
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &vTransform[0][0]);
+
+    glm::mat4 pTransform = glm::mat4(1.0f);
+
+    if (IsStraight)
+        pTransform = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, -2.0f, 2.0f);
+    else if (!IsStraight) {
+        pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 50.0f);
+        pTransform = glm::translate(pTransform, glm::vec3(0.0, 0.0, -5.0f));
+    }
 
     glBindVertexArray(vao);
 
@@ -574,7 +711,25 @@ void drawCubeFront() {
     };
 
     unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+    unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform");
+    unsigned int projectionLocation = glGetUniformLocation(shaderProgramID, "projectionTransform");
+
+    glm::mat4 mTransform = glm::mat4(1.0f);
+    mTransform = Conversion;
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &mTransform[0][0]);
+
+    glm::mat4 vTransform = glm::mat4(1.0f);
+    vTransform = glm::lookAt(cameraPos, cameraDirection, cameraUp);
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &vTransform[0][0]);
+
+    glm::mat4 pTransform = glm::mat4(1.0f);
+
+    if (IsStraight)
+        pTransform = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, -2.0f, 2.0f);
+    else if (!IsStraight) {
+        pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 50.0f);
+        pTransform = glm::translate(pTransform, glm::vec3(0.0, 0.0, -5.0f));
+    }
 
     glBindVertexArray(vao);
 
@@ -635,7 +790,25 @@ void drawCubeUp() {
     };
 
     unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+    unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform");
+    unsigned int projectionLocation = glGetUniformLocation(shaderProgramID, "projectionTransform");
+
+    glm::mat4 mTransform = glm::mat4(1.0f);
+    mTransform = Conversion;
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &mTransform[0][0]);
+
+    glm::mat4 vTransform = glm::mat4(1.0f);
+    vTransform = glm::lookAt(cameraPos, cameraDirection, cameraUp);
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &vTransform[0][0]);
+
+    glm::mat4 pTransform = glm::mat4(1.0f);
+
+    if (IsStraight)
+        pTransform = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, -2.0f, 2.0f);
+    else if (!IsStraight) {
+        pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 50.0f);
+        pTransform = glm::translate(pTransform, glm::vec3(0.0, 0.0, -5.0f));
+    }
 
     glBindVertexArray(vao);
 
@@ -692,7 +865,25 @@ void drawPyramidBottom() {
     };
 
     unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+    unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform");
+    unsigned int projectionLocation = glGetUniformLocation(shaderProgramID, "projectionTransform");
+
+    glm::mat4 mTransform = glm::mat4(1.0f);
+    mTransform = Conversion;
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &mTransform[0][0]);
+
+    glm::mat4 vTransform = glm::mat4(1.0f);
+    vTransform = glm::lookAt(cameraPos, cameraDirection, cameraUp);
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &vTransform[0][0]);
+
+    glm::mat4 pTransform = glm::mat4(1.0f);
+
+    if (IsStraight)
+        pTransform = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, -2.0f, 2.0f);
+    else if (!IsStraight) {
+        pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 50.0f);
+        pTransform = glm::translate(pTransform, glm::vec3(0.0, 0.0, -5.0f));
+    }
 
     glBindVertexArray(vao);
 
@@ -722,6 +913,7 @@ void drawPyramidBack() {
     glm::mat4 RotateY = glm::mat4(1.f);
     glm::mat4 PyramidAllRotate = glm::mat4(1.f);
     glm::mat4 AllRotate = glm::mat4(1.f);
+    glm::mat4 RRRotate = glm::mat4(1.f);
     glm::mat4 MoveTranslate = glm::mat4(1.f);
     glm::mat4 BackTranslate = glm::mat4(1.f);
     glm::mat4 Conversion = glm::mat4(1.f);
@@ -730,10 +922,11 @@ void drawPyramidBack() {
     RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
     PyramidAllRotate = glm::rotate(PyramidAllRotate, glm::radians(PyramidAllangle), glm::vec3(-1.0, 0.0, 0.0));
     AllRotate = glm::rotate(AllRotate, glm::radians(Allangle), glm::vec3(0.0, 1.0, 0.0));
+    RRRotate = glm::rotate(RRRotate, glm::radians(PyramidBackangle), glm::vec3(-1.0, 0.0, 0.0));
     MoveTranslate = glm::translate(MoveTranslate, glm::vec3(0.0f, 0.0f, 0.3f));
     BackTranslate = glm::translate(BackTranslate, glm::vec3(0.0f, 0.0f, -0.3f));
 
-    Conversion = RotateX * RotateY * AllRotate * BackTranslate * PyramidAllRotate * MoveTranslate;
+    Conversion = RotateX * RotateY * AllRotate * BackTranslate * RRRotate * PyramidAllRotate * MoveTranslate;
 
     std::vector<GLfloat> vertices = {
         0.3f, 0.f, -0.3f,
@@ -752,7 +945,25 @@ void drawPyramidBack() {
     };
 
     unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+    unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform");
+    unsigned int projectionLocation = glGetUniformLocation(shaderProgramID, "projectionTransform");
+
+    glm::mat4 mTransform = glm::mat4(1.0f);
+    mTransform = Conversion;
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &mTransform[0][0]);
+
+    glm::mat4 vTransform = glm::mat4(1.0f);
+    vTransform = glm::lookAt(cameraPos, cameraDirection, cameraUp);
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &vTransform[0][0]);
+
+    glm::mat4 pTransform = glm::mat4(1.0f);
+
+    if (IsStraight)
+        pTransform = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, -2.0f, 2.0f);
+    else if (!IsStraight) {
+        pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 50.0f);
+        pTransform = glm::translate(pTransform, glm::vec3(0.0, 0.0, -5.0f));
+    }
 
     glBindVertexArray(vao);
 
@@ -782,6 +993,7 @@ void drawPyramidRight() {
     glm::mat4 RotateY = glm::mat4(1.f);
     glm::mat4 PyramidAllRotate = glm::mat4(1.f);
     glm::mat4 AllRotate = glm::mat4(1.f);
+    glm::mat4 RRRotate = glm::mat4(1.f);
     glm::mat4 MoveTranslate = glm::mat4(1.f);
     glm::mat4 BackTranslate = glm::mat4(1.f);
     glm::mat4 Conversion = glm::mat4(1.f);
@@ -790,10 +1002,11 @@ void drawPyramidRight() {
     RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
     PyramidAllRotate = glm::rotate(PyramidAllRotate, glm::radians(PyramidAllangle), glm::vec3(0.0, 0.0, -1.0));
     AllRotate = glm::rotate(AllRotate, glm::radians(Allangle), glm::vec3(0.0, 1.0, 0.0));
+    RRRotate = glm::rotate(RRRotate, glm::radians(PyramidRightangle), glm::vec3(0.0, 0.0, -1.0));
     MoveTranslate = glm::translate(MoveTranslate, glm::vec3(-0.3f, 0.0f, 0.0f));
     BackTranslate = glm::translate(BackTranslate, glm::vec3(0.3f, 0.0f, 0.0f));
 
-    Conversion = RotateX * RotateY * AllRotate * BackTranslate * PyramidAllRotate * MoveTranslate;
+    Conversion = RotateX * RotateY * AllRotate * BackTranslate * RRRotate * PyramidAllRotate * MoveTranslate;
 
     std::vector<GLfloat> vertices = {
         0.3f, 0.f, 0.3f,
@@ -812,7 +1025,25 @@ void drawPyramidRight() {
     };
 
     unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+    unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform");
+    unsigned int projectionLocation = glGetUniformLocation(shaderProgramID, "projectionTransform");
+
+    glm::mat4 mTransform = glm::mat4(1.0f);
+    mTransform = Conversion;
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &mTransform[0][0]);
+
+    glm::mat4 vTransform = glm::mat4(1.0f);
+    vTransform = glm::lookAt(cameraPos, cameraDirection, cameraUp);
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &vTransform[0][0]);
+
+    glm::mat4 pTransform = glm::mat4(1.0f);
+
+    if (IsStraight)
+        pTransform = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, -2.0f, 2.0f);
+    else if (!IsStraight) {
+        pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 50.0f);
+        pTransform = glm::translate(pTransform, glm::vec3(0.0, 0.0, -5.0f));
+    }
 
     glBindVertexArray(vao);
 
@@ -842,6 +1073,7 @@ void drawPyramidLeft() {
     glm::mat4 RotateY = glm::mat4(1.f);
     glm::mat4 PyramidAllRotate = glm::mat4(1.f);
     glm::mat4 AllRotate = glm::mat4(1.f);
+    glm::mat4 RRRotate = glm::mat4(1.f);
     glm::mat4 MoveTranslate = glm::mat4(1.f);
     glm::mat4 BackTranslate = glm::mat4(1.f);
     glm::mat4 Conversion = glm::mat4(1.f);
@@ -850,10 +1082,11 @@ void drawPyramidLeft() {
     RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
     PyramidAllRotate = glm::rotate(PyramidAllRotate, glm::radians(PyramidAllangle), glm::vec3(0.0, 0.0, 1.0));
     AllRotate = glm::rotate(AllRotate, glm::radians(Allangle), glm::vec3(0.0, 1.0, 0.0));
+    RRRotate = glm::rotate(RRRotate, glm::radians(PyramidLeftangle), glm::vec3(0.0, 0.0, 1.0));
     MoveTranslate = glm::translate(MoveTranslate, glm::vec3(0.3f, 0.0f, 0.0f));
     BackTranslate = glm::translate(BackTranslate, glm::vec3(-0.3f, 0.0f, 0.0f));
 
-    Conversion = RotateX * RotateY * AllRotate * BackTranslate * PyramidAllRotate * MoveTranslate;
+    Conversion = RotateX * RotateY * AllRotate * BackTranslate * RRRotate * PyramidAllRotate * MoveTranslate;
 
     std::vector<GLfloat> vertices = {
         -0.3f, 0.f, -0.3f,
@@ -872,7 +1105,25 @@ void drawPyramidLeft() {
     };
 
     unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+    unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform");
+    unsigned int projectionLocation = glGetUniformLocation(shaderProgramID, "projectionTransform");
+
+    glm::mat4 mTransform = glm::mat4(1.0f);
+    mTransform = Conversion;
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &mTransform[0][0]);
+
+    glm::mat4 vTransform = glm::mat4(1.0f);
+    vTransform = glm::lookAt(cameraPos, cameraDirection, cameraUp);
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &vTransform[0][0]);
+
+    glm::mat4 pTransform = glm::mat4(1.0f);
+
+    if (IsStraight)
+        pTransform = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, -2.0f, 2.0f);
+    else if (!IsStraight) {
+        pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 50.0f);
+        pTransform = glm::translate(pTransform, glm::vec3(0.0, 0.0, -5.0f));
+    }
 
     glBindVertexArray(vao);
 
@@ -902,6 +1153,7 @@ void drawPyramidFront() {
     glm::mat4 RotateY = glm::mat4(1.f);
     glm::mat4 PyramidAllRotate = glm::mat4(1.f);
     glm::mat4 AllRotate = glm::mat4(1.f);
+    glm::mat4 RRRotate = glm::mat4(1.f);
     glm::mat4 MoveTranslate = glm::mat4(1.f);
     glm::mat4 BackTranslate = glm::mat4(1.f);
     glm::mat4 Conversion = glm::mat4(1.f);
@@ -910,10 +1162,11 @@ void drawPyramidFront() {
     RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
     PyramidAllRotate = glm::rotate(PyramidAllRotate, glm::radians(PyramidAllangle), glm::vec3(1.0, 0.0, 0.0));
     AllRotate = glm::rotate(AllRotate, glm::radians(Allangle), glm::vec3(0.0, 1.0, 0.0));
+    RRRotate = glm::rotate(RRRotate, glm::radians(PyramidFrontangle), glm::vec3(1.0, 0.0, 0.0));
     MoveTranslate = glm::translate(MoveTranslate, glm::vec3(0.0f, 0.0f, -0.3f));
     BackTranslate = glm::translate(BackTranslate, glm::vec3(0.0f, 0.0f, 0.3f));
 
-    Conversion = RotateX * RotateY * AllRotate * BackTranslate * PyramidAllRotate * MoveTranslate;
+    Conversion = RotateX * RotateY * AllRotate * BackTranslate * RRRotate * PyramidAllRotate * MoveTranslate;
 
     std::vector<GLfloat> vertices = {
         -0.3f, 0.f, 0.3f,
@@ -932,7 +1185,25 @@ void drawPyramidFront() {
     };
 
     unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(Conversion));
+    unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform");
+    unsigned int projectionLocation = glGetUniformLocation(shaderProgramID, "projectionTransform");
+
+    glm::mat4 mTransform = glm::mat4(1.0f);
+    mTransform = Conversion;
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &mTransform[0][0]);
+
+    glm::mat4 vTransform = glm::mat4(1.0f);
+    vTransform = glm::lookAt(cameraPos, cameraDirection, cameraUp);
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &vTransform[0][0]);
+
+    glm::mat4 pTransform = glm::mat4(1.0f);
+
+    if (IsStraight)
+        pTransform = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, -2.0f, 2.0f);
+    else if (!IsStraight) {
+        pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 50.0f);
+        pTransform = glm::translate(pTransform, glm::vec3(0.0, 0.0, -5.0f));
+    }
 
     glBindVertexArray(vao);
 
