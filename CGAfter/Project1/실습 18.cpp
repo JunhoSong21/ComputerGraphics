@@ -19,23 +19,22 @@ GLvoid drawScene();
 GLvoid Reshape(int w, int h);
 GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid Timer(int value);
-
-bool IsCube = true;
-
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 2.0f);
-glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-glm::vec3 lightPos = glm::vec3(0.0, 0.0, 3.0);
-
-void drawCube();
-void drawPyramid();
-
 void InitBuffer();
 void make_shaderProgram();
 void make_vertexShaders();
 void make_fragmentShaders();
 char* filetobuf(const char* file);
+
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
+glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+GLUquadricObj* qobj;
+
+void drawCenterSphere();
+
+bool IsStraight = true;
+bool IsModelSolid = true;
 
 GLvoid main(int argc, char** argv) {
     glutInit(&argc, argv);
@@ -43,7 +42,7 @@ GLvoid main(int argc, char** argv) {
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(800, 800);
 
-    glutCreateWindow("Example 24");
+    glutCreateWindow("Example 18");
 
     glewExperimental = GL_TRUE;
 
@@ -55,7 +54,7 @@ GLvoid main(int argc, char** argv) {
         std::cout << "GLEW Initialize\n";
 
     glEnable(GL_DEPTH_TEST);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glEnable(GL_COLOR_MATERIAL);
 
     make_shaderProgram();
     InitBuffer();
@@ -69,17 +68,12 @@ GLvoid main(int argc, char** argv) {
 }
 
 GLvoid drawScene() {
-    glClearColor(0.f, 0.f, 0.f, 1.f);
+    glClearColor(1.f, 1.f, 1.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(shaderProgramID);
 
-    glEnable(GL_DEPTH_TEST);
-
-    if (IsCube)
-        drawCube();
-    else if (!IsCube)
-        drawPyramid();
+    drawCenterSphere();
 
     glutSwapBuffers();
 }
@@ -90,15 +84,19 @@ GLvoid Reshape(int w, int h) {
 
 GLvoid Keyboard(unsigned char key, int x, int y) {
     switch (key) {
-    case 'z':
-        lightPos.z += 0.01f;
+    case 'p':
+        IsStraight = true;
         break;
-    case 'q':
-        glutLeaveMainLoop();
+    case 'P':
+        IsStraight = false;
+        break;
+    case 'm':
+        IsModelSolid = true;
+        break;
+    case 'M':
+        IsModelSolid = false;
         break;
     }
-
-
     glutPostRedisplay();
 }
 
@@ -109,33 +107,15 @@ GLvoid Timer(int value) {
     glutTimerFunc(16, Timer, 1);
 }
 
-void drawCube() {
+void drawCenterSphere() {
     glm::mat4 RotateX = glm::mat4(1.f);
     glm::mat4 RotateY = glm::mat4(1.f);
     glm::mat4 Conversion = glm::mat4(1.f);
 
-    RotateX = glm::rotate(RotateX, glm::radians(30.f), glm::vec3(1.0, 0.0, 0.0));
-    RotateY = glm::rotate(RotateY, glm::radians(30.f), glm::vec3(0.0, 1.0, 0.0));
+    RotateX = glm::rotate(RotateX, glm::radians(45.f), glm::vec3(1.0, 0.0, 0.0));
+    RotateY = glm::rotate(RotateY, glm::radians(45.f), glm::vec3(0.0, 1.0, 0.0));
 
     Conversion = RotateX * RotateY;
-
-    std::vector<GLfloat> vertices = {
-        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-        0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-        0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-
-
-
-    };
-
-    std::vector<GLuint> index = {
-        0, 1, 2, 2, 3, 0,
-        1, 0, 4, 4, 5, 1,
-        2, 1, 5, 5, 6, 2,
-        0, 3, 7, 7, 4, 0,
-        3, 2, 6, 6, 7, 3,
-        4, 7, 6, 6, 5, 4
-    };
 
     unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform");
     unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform");
@@ -150,40 +130,22 @@ void drawCube() {
     glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &vTransform[0][0]);
 
     glm::mat4 pTransform = glm::mat4(1.0f);
-    pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 50.0f);
 
+    if (IsStraight)
+        pTransform = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+    else if (!IsStraight) {
+        pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+    }
     glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, &pTransform[0][0]);
+    
+    qobj = gluNewQuadric();
 
-    glBindVertexArray(vao);
+    if (IsModelSolid)
+        gluQuadricDrawStyle(qobj, GLU_FILL);
+    else if (!IsModelSolid)
+        gluQuadricDrawStyle(qobj, GLU_LINE);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(0);
-
-    GLuint ibo;
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
-
-    glUseProgram(shaderProgramID);
-    unsigned int lightPosLocation = glGetUniformLocation(shaderProgramID, "lightPos");
-    glUniform3f(lightPosLocation, lightPos.x, lightPos.y, lightPos.z);
-    unsigned int lightColorLocation = glGetUniformLocation(shaderProgramID, "lightColor");
-    glUniform3f(lightColorLocation, 1.0, 1.0, 1.0);
-    unsigned int objColorLocation = glGetUniformLocation(shaderProgramID, "objectColor");
-    glUniform3f(objColorLocation, 0.0, 1.0, 0.0);
-    unsigned int viewPosLocation = glGetUniformLocation(shaderProgramID, "viewPos");
-    glUniform3f(viewPosLocation, cameraPos.x, cameraPos.y, cameraPos.z);
-
-    glDrawElements(GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, 0);
-
-    glBindVertexArray(0);
-    glDeleteBuffers(1, &ibo);
-}
-
-void drawPyramid() {
-
+    gluSphere(qobj, 0.5f, 50, 50);
 }
 
 void InitBuffer() {
